@@ -8,8 +8,8 @@ import os
 
 
 def main(project_name):
-    training = pd.read_csv(os.path.realpath(r"dataset\{0}\classes\training.csv".format(project_name)), sep=';')
-    testing = pd.read_csv(os.path.realpath(r"dataset\{0}\classes\testing.csv".format(project_name)), sep=';')
+    training = pd.read_csv(os.path.normpath(os.path.realpath(r"dataset\{0}\classes\training.csv".format(project_name))), sep=';')
+    testing = pd.read_csv(os.path.normpath(os.path.realpath(r"dataset\{0}\classes\testing.csv".format(project_name))), sep=';')
     training_y = training['Bugged'].apply(lambda x: 1 if x else 0)
     training_X = training.drop('Bugged', axis=1)
     testing_y = testing['Bugged'].apply(lambda x: 1 if x else 0)
