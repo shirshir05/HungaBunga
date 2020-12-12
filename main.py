@@ -16,7 +16,6 @@ def main(project_name):
     testing_X = testing.drop('Bugged', axis=1)
     clf = HungaBungaClassifier(brain=True)
     clf.fit(training_X, training_y)
-    print(clf.predict(testing_X))
 
 
 if __name__ == "__main__":
