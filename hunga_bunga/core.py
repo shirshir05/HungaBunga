@@ -6,6 +6,7 @@ import sklearn.model_selection
 import numpy as np
 nan = float('nan')
 import traceback
+import sklearn.metrics as metrics
 
 from pprint import pprint
 from collections import Counter
@@ -88,11 +89,16 @@ def timeit(klass, params, x, y):
     return time() - start
 
 
+def pr_auc_score(y_true, y_score):
+    precision, recall, thresholds =  metrics.precision_recall_curve(y_true, y_score)
+    return metrics.auc(recall, precision)
+
+
 def main_loop(models_n_params, x, y, isClassification, test_size = 0.2, n_splits = 5, random_state=None, upsample=True, scoring=None, verbose=True, n_jobs =cpu_count() - 1, brain=False, grid_search=True):
     def cv_(): return cv_clf(x, y, test_size, n_splits, random_state, upsample) if isClassification else cv_reg(x, test_size, n_splits, random_state)
     res = []
     num_features = x.shape[1]
-    scoring = scoring or ('accuracy' if isClassification else 'neg_mean_squared_error')
+    scoring = scoring or (pr_auc_score if isClassification else 'neg_mean_squared_error')
     if brain: print('Scoring criteria:', scoring)
     for i, (clf_Klass, parameters) in enumerate(tqdm(models_n_params)):
         try:
