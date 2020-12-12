@@ -4,6 +4,7 @@ import random
 from hunga_bunga import HungaBungaClassifier, HungaBungaRegressor, HungaBungaZeroKnowledge, HungaBungaRandomClassifier, HungaBungaRandomRegressor
 import pandas as pd
 import sys
+import os
 
 
 def main(project_name):
@@ -19,4 +20,4 @@ def main(project_name):
 
 
 if __name__ == "__main__":
-    main(sys.argv[1])
+    main(os.path.realpath(sys.argv[1]))
