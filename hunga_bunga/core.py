@@ -90,7 +90,7 @@ def timeit(klass, params, x, y):
 
 
 def pr_auc_score(y_true, y_score):
-    precision, recall, thresholds =  metrics.precision_recall_curve(y_true, y_score)
+    precision, recall, thresholds = metrics.precision_recall_curve(y_true, y_score)
     return metrics.auc(recall, precision)
 
 
@@ -98,7 +98,7 @@ def main_loop(models_n_params, x, y, isClassification, test_size = 0.2, n_splits
     def cv_(): return cv_clf(x, y, test_size, n_splits, random_state, upsample) if isClassification else cv_reg(x, test_size, n_splits, random_state)
     res = []
     num_features = x.shape[1]
-    scoring = scoring or (pr_auc_score if isClassification else 'neg_mean_squared_error')
+    scoring = scoring or (metrics.make_scorer(pr_auc_score, needs_proba=True) if isClassification else 'neg_mean_squared_error')
     if brain: print('Scoring criteria:', scoring)
     for i, (clf_Klass, parameters) in enumerate(tqdm(models_n_params)):
         try:
@@ -109,7 +109,7 @@ def main_loop(models_n_params, x, y, isClassification, test_size = 0.2, n_splits
             if grid_search: clf_search = GridSearchCVProgressBar(clf_Klass(), parameters, scoring, cv=cv_(), n_jobs=n_jobs)
             else: clf_search = RandomizedSearchCVProgressBar(clf_Klass(), parameters, scoring, cv=cv_(), n_jobs=n_jobs)
             clf_search.fit(x, y)
-            timespent = timeit(clf_Klass, clf_search.best_params_, x, y)
+            timespent = 0#timeit(clf_Klass, clf_search.best_params_, x, y)
             if brain: print('best score:', clf_search.best_score_, 'time/clf: %0.3f seconds' % timespent)
             if brain: print('best params:')
             if brain: pprint(clf_search.best_params_)

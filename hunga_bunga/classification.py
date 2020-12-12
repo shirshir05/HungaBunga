@@ -41,7 +41,7 @@ linear_models_n_params = [
       }),
 
     (Perceptron,
-     {'penalty': penalty_all, 'alpha': alpha, 'n_iter': n_iter, 'eta0': eta0, 'warm_start': warm_start
+     {'penalty': penalty_all, 'alpha': alpha, 'eta0': eta0, 'warm_start': warm_start
       }),
 
     (PassiveAggressiveClassifier,

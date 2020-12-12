@@ -13,7 +13,7 @@ def main(project_name):
     training_X = training.drop('Bugged', axis=1)
     testing_y = testing['Bugged']
     testing_X = testing.drop('Bugged', axis=1)
-    clf = HungaBungaClassifier()
+    clf = HungaBungaClassifier(brain=True)
     clf.fit(training_X, training_y)
     print(clf.predict(testing_X))
 
