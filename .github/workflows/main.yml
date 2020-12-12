@@ -29,7 +29,8 @@ jobs:
           pip install scipy
           pip install joblib
           pip install scikit-learn 
-          pip install tabulate  
+          pip install tabulate   
+          pip install pandas  
           pip install tqdm
 
       # Runs a single command using the runners shell
