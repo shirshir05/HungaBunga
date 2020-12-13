@@ -31,7 +31,7 @@ from .params import *
 
 linear_models_n_params = [
     (SGDClassifier,
-     {'loss': ['log', 'modified_huber', 'squared_hinge'],
+     {'loss': ['log', 'modified_huber'],
       'alpha': [0.0001, 0.001, 0.1],
       'penalty': penalty_12none
       }),
