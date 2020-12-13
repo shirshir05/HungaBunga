@@ -90,7 +90,7 @@ def timeit(klass, params, x, y):
 
 
 def pr_auc_score(y_true, y_score):
-    precision, recall, thresholds = metrics.precision_recall_curve(y_true, y_score)
+    precision, recall, thresholds = metrics.precision_recall_curve(y_true.to_list(), y_score)
     return metrics.auc(recall, precision)
 
 
