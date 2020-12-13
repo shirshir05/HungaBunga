@@ -21,7 +21,7 @@ from sklearn.model_selection import StratifiedShuffleSplit as sss, ShuffleSplit 
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier, ExtraTreesClassifier, ExtraTreesRegressor, AdaBoostClassifier, AdaBoostRegressor
 from sklearn.tree import DecisionTreeClassifier, DecisionTreeRegressor
 from sklearn import model_selection
-
+import json
 
 TREE_N_ENSEMBLE_MODELS = [RandomForestClassifier, GradientBoostingClassifier, DecisionTreeClassifier, DecisionTreeRegressor,ExtraTreesClassifier, ExtraTreesRegressor, AdaBoostClassifier, AdaBoostRegressor]
 
@@ -99,20 +99,19 @@ def main_loop(models_n_params, x, y, isClassification, test_size = 0.2, n_splits
     res = []
     num_features = x.shape[1]
     scoring = scoring or (metrics.make_scorer(pr_auc_score, needs_proba=True) if isClassification else 'neg_mean_squared_error')
-    if brain: print('Scoring criteria:', scoring)
+    # if brain: print('Scoring criteria:', scoring)
     for i, (clf_Klass, parameters) in enumerate(tqdm(models_n_params)):
         try:
-            if brain: print('-'*15, 'model %d/%d' % (i+1, len(models_n_params)), '-'*15)
-            if brain: print(clf_Klass.__name__)
+            # if brain: print('-'*15, 'model %d/%d' % (i+1, len(models_n_params)), '-'*15)
+            # if brain: print(clf_Klass.__name__)
             if clf_Klass == KMeans: parameters['n_clusters'] = [len(np.unique(y))]
             elif clf_Klass in TREE_N_ENSEMBLE_MODELS: parameters['max_features'] = [v for v in parameters['max_features'] if v is None or type(v)==str or v<=num_features]
             if grid_search: clf_search = GridSearchCVProgressBar(clf_Klass(), parameters, scoring, cv=cv_(), n_jobs=n_jobs)
             else: clf_search = RandomizedSearchCVProgressBar(clf_Klass(), parameters, scoring, cv=cv_(), n_jobs=n_jobs)
             clf_search.fit(x, y)
             timespent = 0#timeit(clf_Klass, clf_search.best_params_, x, y)
-            if brain: print('best score:', clf_search.best_score_, 'time/clf: %0.3f seconds' % timespent)
-            if brain: print('best params:')
-            if brain: pprint(clf_search.best_params_)
+            # if brain: print('best score:', clf_search.best_score_, 'time/clf: %0.3f seconds' % timespent)
+            # if brain: print('best params:', clf_search.best_params_)
             if verbose:
                 print('validation scores:', clf_search.cv_results_['mean_test_score'])
                 print('training scores:', clf_search.cv_results_['mean_train_score'])
@@ -120,12 +119,13 @@ def main_loop(models_n_params, x, y, isClassification, test_size = 0.2, n_splits
         except Exception as e:
             traceback.print_exc()
             res.append((clf_Klass(), -np.inf, np.inf))
-    if brain: print('='*60)
-    if brain: print(tabulate([[m.__class__.__name__, '%.3f'%s, '%.3f'%t] for m, s, t in res], headers=['Model', scoring, 'Time/clf (s)']))
+    # if brain: print('='*60)
+    # if brain: print(tabulate([[m.__class__.__name__, '%.3f'%s, '%.3f'%t] for m, s, t in res], headers=['Model', scoring, 'Time/clf (s)']))
     winner_ind = np.argmax([v[1] for v in res])
     winner = res[winner_ind][0]
-    if brain: print('='*60)
-    if brain: print('The winner is: %s with score %0.3f.' % (winner.__class__.__name__, res[winner_ind][1]))
+    # if brain: print('='*60)
+    # if brain: print('The winner is: %s with score %0.3f.' % (winner.__class__.__name__, res[winner_ind][1]))
+    if brain: print(json.dumps({'winner': winner.__class__.__name__, 'score': '%0.3f.' % res[winner_ind][1], 'params': clf_search.best_params_}))
     return winner, res
 
 
