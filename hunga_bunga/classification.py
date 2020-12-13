@@ -87,7 +87,7 @@ neighbor_models_n_params = [
       'init': ['k-means++', 'random']}),
 
     (KNeighborsClassifier,
-     {'n_neighbors': n_neighbors, 'algo': neighbor_algo, 'leaf_size': neighbor_leaf_size, 'metric': neighbor_metric,
+     {'n_neighbors': n_neighbors, 'leaf_size': neighbor_leaf_size, 'metric': neighbor_metric,
       'weights': ['uniform', 'distance'],
       'p': [1, 2]
       }),
@@ -98,7 +98,7 @@ neighbor_models_n_params = [
       }),
 
     (RadiusNeighborsClassifier,
-     {'radius': neighbor_radius, 'algo': neighbor_algo, 'leaf_size': neighbor_leaf_size, 'metric': neighbor_metric,
+     {'radius': neighbor_radius, 'leaf_size': neighbor_leaf_size, 'metric': neighbor_metric,
       'weights': ['uniform', 'distance'],
       'p': [1, 2],
       'outlier_label': [-1]
@@ -163,21 +163,26 @@ tree_models_n_params = [
 tree_models_n_params_small = [
 
     (RandomForestClassifier,
-     {'max_features_small': max_features_small, 'n_estimators_small': n_estimators_small, 'min_samples_split': min_samples_split, 'max_depth_small': max_depth_small, 'min_samples_leaf': min_samples_leaf
+     {'max_features': max_features_small, 'n_estimators': n_estimators_small, 'min_samples_split': min_samples_split, 'max_depth': max_depth_small, 'min_samples_leaf': min_samples_leaf
       }),
 
     (DecisionTreeClassifier,
-     {'max_features_small': max_features_small, 'max_depth_small': max_depth_small, 'min_samples_split': min_samples_split, 'min_samples_leaf': min_samples_leaf
+     {'max_features': max_features_small, 'max_depth': max_depth_small, 'min_samples_split': min_samples_split, 'min_samples_leaf': min_samples_leaf
       }),
 
     (ExtraTreesClassifier,
-     {'n_estimators_small': n_estimators_small, 'max_features_small': max_features_small, 'max_depth_small': max_depth_small,
+     {'n_estimators': n_estimators_small, 'max_features': max_features_small, 'max_depth': max_depth_small,
       'min_samples_split': min_samples_split, 'min_samples_leaf': min_samples_leaf})
 ]
 
 
 def run_all_classifiers(x, y, small = True, normalize_x = True, n_jobs=cpu_count()-1, brain=False, test_size=0.2, n_splits=5, upsample=True, scoring=None, verbose=False, grid_search=True):
     all_params = (linear_models_n_params_small if small else linear_models_n_params) +  (nn_models_n_params_small if small else nn_models_n_params) + ([] if small else gaussianprocess_models_n_params) + neighbor_models_n_params + (svm_models_n_params_small if small else svm_models_n_params) + (tree_models_n_params_small if small else tree_models_n_params)
+    for m, p in all_params:
+        m_params = m().get_params()
+        for param in p:
+            if param not in m_params:
+                print(m, param)
     return main_loop(all_params, StandardScaler().fit_transform(x) if normalize_x else x, y, isClassification=True, n_jobs=n_jobs, verbose=verbose, brain=brain, test_size=test_size, n_splits=n_splits, upsample=upsample, scoring=scoring, grid_search=grid_search)
 
 def run_one_classifier(x, y, small = True, normalize_x = True, n_jobs=cpu_count()-1, brain=False, test_size=0.2, n_splits=5, upsample=True, scoring=None, verbose=False, grid_search=True):
