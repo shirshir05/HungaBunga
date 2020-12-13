@@ -24,7 +24,8 @@ from sklearn.base import BaseEstimator
 from sklearn.base import ClassifierMixin
 from sklearn.base import RegressorMixin
 from sklearn.base import is_classifier
-
+from sklearn.utils.testing import all_estimators
+from functools import reduce
 from .core import *
 from .params import *
 
@@ -178,6 +179,22 @@ tree_models_n_params_small = [
 
 def run_all_classifiers(x, y, small = True, normalize_x = True, n_jobs=cpu_count()-1, brain=False, test_size=0.2, n_splits=5, upsample=True, scoring=None, verbose=False, grid_search=True):
     all_params = (linear_models_n_params_small if small else linear_models_n_params) +  (nn_models_n_params_small if small else nn_models_n_params) + ([] if small else gaussianprocess_models_n_params) + neighbor_models_n_params + (svm_models_n_params_small if small else svm_models_n_params) + (tree_models_n_params_small if small else tree_models_n_params)
+    all_grid_params = dict(reduce(list.__add__, list(map(lambda x: list(x[1].items()), all_params)), []))
+    estimators = all_estimators()
+    proba = []
+    for name, class_ in estimators:
+        if hasattr(class_, 'predict_proba'):
+            try:
+                params = {}
+                for k, v in class_().get_params().items():
+                    p = [v]
+                    if k in all_grid_params:
+                        p.extend(all_grid_params[k])
+                    params[k] = p
+                proba.append((class_, params))
+            except Exception as e:
+                pass
+    all_params.extend(proba)
     for m, p in all_params:
         m_params = m().get_params()
         for param in p:
