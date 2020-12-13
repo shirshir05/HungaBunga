@@ -45,7 +45,7 @@ linear_models_n_params = [
       }),
 
     (PassiveAggressiveClassifier,
-     {'C': C, 'n_iter': n_iter, 'warm_start': warm_start,
+     {'C': C, 'warm_start': warm_start,
       'loss': ['hinge', 'squared_hinge'],
       })
 ]
