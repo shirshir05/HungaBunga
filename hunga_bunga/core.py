@@ -118,7 +118,7 @@ def main_loop(models_n_params, x, y, isClassification, test_size = 0.2, n_splits
                 print('training scores:', clf_search.cv_results_['mean_train_score'])
             res.append((clf_search.best_estimator_, clf_search.best_score_, timespent))
         except Exception as e:
-            if verbose: traceback.print_exc()
+            traceback.print_exc()
             res.append((clf_Klass(), -np.inf, np.inf))
     if brain: print('='*60)
     if brain: print(tabulate([[m.__class__.__name__, '%.3f'%s, '%.3f'%t] for m, s, t in res], headers=['Model', scoring, 'Time/clf (s)']))
