@@ -177,7 +177,7 @@ tree_models_n_params_small = [
 ]
 
 
-def run_all_classifiers(x, y, small = True, normalize_x = True, n_jobs=cpu_count()-1, brain=False, test_size=0.2, n_splits=5, upsample=True, scoring=None, verbose=False, grid_search=True):
+def run_all_classifiers(x, y, small = True, normalize_x = True, n_jobs=cpu_count()-1, brain=False, test_size=0.2, n_splits=5, upsample=True, scoring=None, verbose=False, grid_search=True, ind=None):
     all_params = (linear_models_n_params_small if small else linear_models_n_params) +  (nn_models_n_params_small if small else nn_models_n_params) + ([] if small else gaussianprocess_models_n_params) + neighbor_models_n_params + (svm_models_n_params_small if small else svm_models_n_params) + (tree_models_n_params_small if small else tree_models_n_params)
     all_grid_params = dict(reduce(list.__add__, list(map(lambda x: list(x[1].items()), all_params)), []))
     estimators = all_estimators()
@@ -200,6 +200,8 @@ def run_all_classifiers(x, y, small = True, normalize_x = True, n_jobs=cpu_count
         for param in p:
             if param not in m_params:
                 print(m, param)
+    if ind:
+        all_params = [all_params[int(ind)]]
     return main_loop(all_params, StandardScaler().fit_transform(x) if normalize_x else x, y, isClassification=True, n_jobs=n_jobs, verbose=verbose, brain=brain, test_size=test_size, n_splits=n_splits, upsample=upsample, scoring=scoring, grid_search=grid_search)
 
 def run_one_classifier(x, y, small = True, normalize_x = True, n_jobs=cpu_count()-1, brain=False, test_size=0.2, n_splits=5, upsample=True, scoring=None, verbose=False, grid_search=True):
@@ -209,22 +211,23 @@ def run_one_classifier(x, y, small = True, normalize_x = True, n_jobs=cpu_count(
 
 
 class HungaBungaClassifier(ClassifierMixin):
-    def __init__(self, brain=False, test_size = 0.2, n_splits = 5, random_state=None, upsample=True, scoring=None, verbose=False, normalize_x = True, n_jobs =cpu_count() - 1, grid_search=True):
+    def __init__(self, brain=False, test_size = 0.2, n_splits = 5, random_state=None, upsample=True, scoring=None, verbose=False, normalize_x = True, n_jobs =cpu_count() - 1, grid_search=True, ind=None):
         self.model = None
         self.brain = brain
         self.test_size = test_size
         self.n_splits = n_splits
         self.random_state = random_state
         self.upsample = upsample
-        self.scoring = None
+        self.scoring = scoring
         self.verbose = verbose
         self.n_jobs = n_jobs
         self.normalize_x = normalize_x
         self.grid_search = grid_search
+        self.ind = ind
         super(HungaBungaClassifier, self).__init__()
 
     def fit(self, x, y):
-        self.model = run_all_classifiers(x, y, normalize_x=self.normalize_x, test_size=self.test_size, n_splits=self.n_splits, upsample=self.upsample, scoring=self.scoring, verbose=self.verbose, brain=self.brain, n_jobs=self.n_jobs, grid_search=self.grid_search)[0]
+        self.model = run_all_classifiers(x, y, normalize_x=self.normalize_x, test_size=self.test_size, n_splits=self.n_splits, upsample=self.upsample, scoring=self.scoring, verbose=self.verbose, brain=self.brain, n_jobs=self.n_jobs, grid_search=self.grid_search, ind=self.ind)[0]
         return self
 
     def predict(self, x):
