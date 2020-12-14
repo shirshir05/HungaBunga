@@ -31,7 +31,7 @@ def main(project_name, ind=None):
     clf = HungaBungaClassifier(brain=True, ind=ind, scoring=metrics.make_scorer(pr_auc_score, needs_proba=True))
     clf.fit(training_X, training_y)
     model = clf.model
-    print(json.dumps({'winner': model.__class__.__name__, 'score': '%0.3f' % eval(model, model.classes_, testing_X, testing_y)}))
+    print(json.dumps({'model': model.__class__.__name__, 'score': '%0.3f' % eval(model, model.classes_, testing_X, testing_y)}))
 
     # tpot = TPOTClassifier(max_time_mins=1, scoring=metrics.make_scorer(pr_auc_score, needs_proba=True))
     # tpot.fit(training_X, training_y)
