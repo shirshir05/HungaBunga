@@ -20,7 +20,7 @@ jobs:
     strategy:
         fail-fast: false
         matrix:
-          ind: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]
+          ind: [0, 1, 2, 3, 4] #, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -63,11 +63,37 @@ jobs:
       needs: build
       
       steps:
+        
+        - name: add all valids to one file
+          shell: python
+          run: |
+              import json
+              import os
+              import csv
+              import httplib
+              import pandas as pd
+              with open(os.getenv('GITHUB_EVENT_PATH')) as json_file:
+                            data = json.load(json_file)
+                            issue_number = data['issue']['number']
+              conn = httplib.HTTPSConnection("api.github.com")
+              conn.request("GET","/repos/amir9979/bug_miner_runner/issues/{0}/comments".format(issue_number), "", {"User-Agent":"amir9979" , "Accept":"application/vnd.github.v3+json", "Authorization":"token ${{ secrets.GITHUB_TOKEN }}"})
+              response = json.loads(conn.getresponse().read())
+              print response
+              classifiers = pd.DataFrame(list(map(lambda x: list(json.loads(x['body'])), response)))
+              classifiers.to_csv("results.csv")
 
-      - name: Close Issue
-        continue-on-error: true
-        uses: peter-evans/close-issue@v1
-        with:
-          comment: |
-            The issue you have reported seems to be resolved now.
-            The extracted data can be found at releases.
+        - name: Upload results to release
+          uses: svenstaro/upload-release-action@v1-release
+          with:
+            repo_token: ${{ secrets.GITHUB_TOKEN }}
+            file: results.csv
+            asset_name: ${{github.event.issue.title}}_${{github.event.issue.number}}.csv
+
+
+        - name: Close Issue
+          continue-on-error: true
+          uses: peter-evans/close-issue@v1
+          with:
+            comment: |
+              The issue you have reported seems to be resolved now.
+              The extracted data can be found at releases.
