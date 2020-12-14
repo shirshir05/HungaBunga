@@ -99,6 +99,7 @@ jobs:
             repo_token: ${{ secrets.GITHUB_TOKEN }}
             file: results.csv
             asset_name: ${{github.event.issue.title}}_${{github.event.issue.number}}.csv
+            tag: ${{github.event.issue.title}}_${{github.event.issue.number}}.csv
 
 
         - name: Close Issue
