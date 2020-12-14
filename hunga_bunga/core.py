@@ -125,7 +125,7 @@ def main_loop(models_n_params, x, y, isClassification, test_size = 0.2, n_splits
     winner = res[winner_ind][0]
     # if brain: print('='*60)
     # if brain: print('The winner is: %s with score %0.3f.' % (winner.__class__.__name__, res[winner_ind][1]))
-    if brain: print(json.dumps({'winner': winner.__class__.__name__, 'score': '%0.3f.' % res[winner_ind][1]}))
+    # if brain: print(json.dumps({'winner': winner.__class__.__name__, 'score': '%0.3f.' % res[winner_ind][1]}))
     return winner, res
 
 

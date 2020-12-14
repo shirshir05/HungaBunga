@@ -224,10 +224,11 @@ class HungaBungaClassifier(ClassifierMixin):
         self.normalize_x = normalize_x
         self.grid_search = grid_search
         self.ind = ind
+        self.res = None
         super(HungaBungaClassifier, self).__init__()
 
     def fit(self, x, y):
-        self.model = run_all_classifiers(x, y, normalize_x=self.normalize_x, test_size=self.test_size, n_splits=self.n_splits, upsample=self.upsample, scoring=self.scoring, verbose=self.verbose, brain=self.brain, n_jobs=self.n_jobs, grid_search=self.grid_search, ind=self.ind)[0]
+        self.model, self.res = run_all_classifiers(x, y, normalize_x=self.normalize_x, test_size=self.test_size, n_splits=self.n_splits, upsample=self.upsample, scoring=self.scoring, verbose=self.verbose, brain=self.brain, n_jobs=self.n_jobs, grid_search=self.grid_search, ind=self.ind)
         return self
 
     def predict(self, x):
