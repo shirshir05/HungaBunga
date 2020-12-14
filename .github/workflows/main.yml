@@ -90,8 +90,8 @@ jobs:
               conn = http.client.HTTPSConnection("api.github.com")
               conn.request("GET","/repos/amir9979/HungaBunga/issues/{0}/comments".format(issue_number), "", {"User-Agent":"amir9979" , "Accept":"application/vnd.github.v3+json", "Authorization":"token ${{ secrets.GITHUB_TOKEN }}"})
               response = json.loads(conn.getresponse().read())
-              classifiers = pd.DataFrame(list(map(lambda x: list(json.loads(x['body'])), response)))
-              classifiers.to_csv("results.csv")
+              classifiers = pd.DataFrame(list(map(lambda x: json.loads(x['body']), response)))
+              classifiers.to_csv("results.csv", index=False)
 
         - name: Upload results to release
           uses: svenstaro/upload-release-action@v1-release
