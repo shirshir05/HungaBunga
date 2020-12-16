@@ -50,7 +50,11 @@ jobs:
                 conn.request("GET","/repos/amir9979/HungaBunga/issues/{0}/comments".format(issue_number), "", {"User-Agent":"amir9979" , "Accept":"application/vnd.github.v3+json", "Authorization":"token ${{ secrets.GITHUB_TOKEN }}"})
                 response = list(map(lambda x: x['body'], json.loads(conn.getresponse().read())))
                 print(response)
-                all_data.extend(list(map(json.loads, response)))
+                for x in response:
+                  try: 
+                    all_data.append(json.loads(x))
+                  except:
+                    pass
               pd.DataFrame(all_data).to_csv("results.csv", index=False)
         - name: Upload results to release
           uses: svenstaro/upload-release-action@v1-release
