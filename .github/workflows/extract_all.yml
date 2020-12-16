@@ -6,7 +6,7 @@ name: extract_all
 on:
 
   # Allows you to run this workflow manually from the Actions tab
-  on: 
+
   workflow_dispatch:
     inputs:
       logLevel:
