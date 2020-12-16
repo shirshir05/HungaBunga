@@ -109,9 +109,9 @@ neighbor_models_n_params = [
 gaussianprocess_models_n_params = [
     (GaussianProcessClassifier,
      {'warm_start': warm_start,
-      'kernel': [RBF(), ConstantKernel(), DotProduct(), WhiteKernel()],
-      'max_iter_predict': [500],
-      'n_restarts_optimizer': [3],
+      'kernel': [RBF(), ConstantKernel(), DotProduct(), WhiteKernel(), Matern(), StationaryKernelMixin()],
+      'max_iter_predict': [20, 50, 100, 200, 500, 1000],
+      'n_restarts_optimizer': [0, 1, 2, 3, 4],
       })
 ]
 
@@ -176,6 +176,20 @@ tree_models_n_params_small = [
       'min_samples_split': min_samples_split, 'min_samples_leaf': min_samples_leaf})
 ]
 
+best = [
+(RadiusNeighborsClassifier,
+     {'radius': neighbor_radius, 'leaf_size': neighbor_leaf_size, 'metric': neighbor_metric,
+      'weights': ['uniform', 'distance'],
+      'p': [1, 2, 3, 4, 5],
+      'outlier_label': [-1]
+      }),
+    (GaussianProcessClassifier,
+     {'warm_start': warm_start,
+      'kernel': [RBF(), ConstantKernel(), DotProduct(), WhiteKernel(), Matern(), StationaryKernelMixin()],
+      'max_iter_predict': [20, 50, 100, 200, 500, 1000],
+      'n_restarts_optimizer': [0, 1, 2, 3, 4],
+      })
+]
 
 def run_all_classifiers(x, y, small = True, normalize_x = True, n_jobs=cpu_count()-1, brain=False, test_size=0.2, n_splits=5, upsample=True, scoring=None, verbose=False, grid_search=True, ind=None):
     all_params = (linear_models_n_params_small if small else linear_models_n_params) +  (nn_models_n_params_small if small else nn_models_n_params) + ([] if small else gaussianprocess_models_n_params) + neighbor_models_n_params + (svm_models_n_params_small if small else svm_models_n_params) + (tree_models_n_params_small if small else tree_models_n_params)
@@ -201,7 +215,7 @@ def run_all_classifiers(x, y, small = True, normalize_x = True, n_jobs=cpu_count
             if param not in m_params:
                 print(m, param)
     if ind:
-        all_params = [all_params[int(ind)]]
+        all_params = [best[int(ind)]]
     return main_loop(all_params, StandardScaler().fit_transform(x) if normalize_x else x, y, isClassification=True, n_jobs=n_jobs, verbose=verbose, brain=brain, test_size=test_size, n_splits=n_splits, upsample=upsample, scoring=scoring, grid_search=grid_search)
 
 def run_one_classifier(x, y, small = True, normalize_x = True, n_jobs=cpu_count()-1, brain=False, test_size=0.2, n_splits=5, upsample=True, scoring=None, verbose=False, grid_search=True):
