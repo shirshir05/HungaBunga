@@ -1,12 +1,21 @@
 # This is a basic workflow to help you get started with Actions
 
-name: CI
+name: extract_all
 
 # Controls when the action will run. 
 on:
 
   # Allows you to run this workflow manually from the Actions tab
+  on: 
   workflow_dispatch:
+    inputs:
+      logLevel:
+        description: 'Log level'     
+        required: true
+        default: 'warning'
+      tags:
+        description: 'Test scenario tags'  
+
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
