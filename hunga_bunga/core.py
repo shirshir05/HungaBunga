@@ -111,7 +111,7 @@ def main_loop(models_n_params, x, y, isClassification, test_size = 0.2, n_splits
             clf_search.fit(x, y)
             timespent = 0#timeit(clf_Klass, clf_search.best_params_, x, y)
             # if brain: print('best score:', clf_search.best_score_, 'time/clf: %0.3f seconds' % timespent)
-            # if brain: print('best params:', clf_search.best_params_)
+            if brain: print('best params:', clf_search.best_params_)
             if verbose:
                 print('validation scores:', clf_search.cv_results_['mean_test_score'])
                 print('training scores:', clf_search.cv_results_['mean_train_score'])
