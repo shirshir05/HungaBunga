@@ -1,5 +1,0 @@
-;UnnecessaryAbstraction;Hub_likeModularization;MultipathHierarchy;BrokenHierarchy;MissingHierarchy;InsufficientModularization;DeepHierarchy;MultifacetedAbstraction;CyclicHierarchy;WideHierarchy;UnutilizedAbstraction;Cyclic_DependentModularization;ImperativeAbstraction;DeficientEncapsulation;BrokenModularization;Bugged;UnexploitedEncapsulation;RebelliousHierarchy
-count;623;623;623;623;623;623;623;623;623;623;623;623;623;623;623;623;623;623
-unique;1;1;2;2;1;2;1;1;1;2;2;1;2;2;1;2;1;1
-top;False;False;False;False;False;False;False;False;False;False;True;False;False;False;False;False;False;False
-freq;623;623;619;525;623;557;623;623;623;620;355;623;617;585;623;538;623;623

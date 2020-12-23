@@ -1,1 +1,0 @@
-{"LongIdentifier": 0.03900283928149443, "LongStatement": 0.6754282059626282, "ComplexConditional": 0.009607296730207451, "AbstractFunctionCallFromConstructor": 0.0, "MissingDefault": 0.00050244913874528, "ComplexMethod": 0.03326280494333007, "EmptyCatchClause": 0.003874932192603418, "MagicNumber": 0.23832147175099125}

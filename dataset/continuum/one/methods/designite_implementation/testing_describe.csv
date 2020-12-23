@@ -1,5 +1,0 @@
-;BuggedMethods;LongIdentifier;LongStatement;ComplexConditional;AbstractFunctionCallFromConstructor;MissingDefault;ComplexMethod;EmptyCatchClause;MagicNumber
-count;5923;5923;5923;5923;5923;5923;5923;5923;5923
-unique;2;2;2;2;1;2;2;2;2
-top;False;False;False;False;False;False;False;False;False
-freq;5707;5867;5682;5916;5923;5922;5899;5918;5793

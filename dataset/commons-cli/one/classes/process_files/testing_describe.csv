@@ -1,0 +1,12 @@
+;all_process_insertions_std;all_process_deletions_min;all_process_insertions_max;Bugged;all_process_changes_max;all_process_changes_count;all_process_insertions_mean;all_process_count;all_process_changes_mean;all_process_deletions_max;all_process_insertions_min;all_process_insertions_count;all_process_changes_min;all_process_changes_std;all_process_deletions_count;all_process_deletions_std;all_process_deletions_mean
+count;47.0;47.0;47.0;47;47.0;47.0;47.0;47.0;47.0;47.0;47.0;47.0;47.0;47.0;47.0;47.0;47.0
+unique;;;;2;;;;;;;;;;;;;
+top;;;;False;;;;;;;;;;;;;
+freq;;;;39;;;;;;;;;;;;;
+mean;0.0;0.0;0.0;;0.0;0.0;0.0;14.553191489361701;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0
+std;0.0;0.0;0.0;;0.0;0.0;0.0;10.435742324043796;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0
+min;0.0;0.0;0.0;;0.0;0.0;0.0;1.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0
+25%;0.0;0.0;0.0;;0.0;0.0;0.0;6.5;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0
+50%;0.0;0.0;0.0;;0.0;0.0;0.0;12.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0
+75%;0.0;0.0;0.0;;0.0;0.0;0.0;21.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0
+max;0.0;0.0;0.0;;0.0;0.0;0.0;39.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0
