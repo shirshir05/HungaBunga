@@ -45,11 +45,15 @@ jobs:
                 total_data = []
                 for x in response:
                   try:
-                    params = json.loads(x.splitlines()[0].replace('best params: ', ''))
-                    score = json.loads(x.splitlines()[1])
+                    a, b = x.splitlines()
+                    a = a[a.index('{'):]
+                    print('a', a)
+                    print('b', b)
+                    params = json.loads(a)
+                    score = json.loads(b)
                     params.update(score)
                     total_data.append(params)
-                    all_data.append(json.loads(x.splitlines()[1]))
+                    all_data.append(json.loads(b))
                   except:
                     pass
               pd.DataFrame(all_data).to_csv(r"res_dir\results.csv", index=False)
