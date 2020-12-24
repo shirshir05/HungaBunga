@@ -8,14 +8,6 @@ on:
   # Allows you to run this workflow manually from the Actions tab
 
   workflow_dispatch:
-    inputs:
-      ReleaseName:
-        description: 'ReleaseName'     
-        required: true
-        default: 100
-      tags:
-        description: 'Test scenario tags'  
-
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -63,10 +55,13 @@ jobs:
               pd.DataFrame(all_data).to_csv(r"res_dir\results.csv", index=False)
               with open(r"res_dir\results.json", "w") as f:
                 json.dump(total_data, f)
-        - name: Upload results to release
-          uses: svenstaro/upload-release-action@v1-release
+        
+        
+        - name: Upload results
+          if: ${{ always() }}
+          uses: actions/upload-artifact@v2
           with:
-            repo_token: ${{ secrets.GITHUB_TOKEN }}
-            file: res_dir
-            asset_name: ${{github.event.inputs.ReleaseName}}.csv
-            tag: ${{github.event.inputs.ReleaseName}}.csv
+            # Artifact name
+            name: res_dir
+            # A file, directory or wildcard pattern that describes what to upload
+            path: res_dir
