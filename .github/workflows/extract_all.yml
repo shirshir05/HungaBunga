@@ -54,8 +54,8 @@ jobs:
                     params.update(score)
                     total_data.append(params)
                     all_data.append(json.loads(b))
-                  except:
-                    pass
+                  except Exception as e:
+                    raise e
               pd.DataFrame(all_data).to_csv(r"res_dir\results.csv", index=False)
               with open(r"res_dir\results.json", "w") as f:
                 json.dump(total_data, f)
