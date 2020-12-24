@@ -38,11 +38,11 @@ jobs:
               import pandas as pd
               os.mkdir("res_dir")
               all_data = []
+              total_data = []
               for issue_number in [93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109]:
                 conn = http.client.HTTPSConnection("api.github.com")
                 conn.request("GET","/repos/amir9979/HungaBunga/issues/{0}/comments".format(issue_number), "", {"User-Agent":"amir9979" , "Accept":"application/vnd.github.v3+json", "Authorization":"token ${{ secrets.GITHUB_TOKEN }}"})
                 response = list(map(lambda x: x['body'], json.loads(conn.getresponse().read())))
-                total_data = []
                 for x in response:
                   try:
                     a, b = x.splitlines()
