@@ -12,7 +12,7 @@ on:
       ReleaseName:
         description: 'ReleaseName'     
         required: true
-        default: 'warning'
+        default: 100
       tags:
         description: 'Test scenario tags'  
 
@@ -44,22 +44,29 @@ jobs:
               import csv
               import http.client
               import pandas as pd
+              os.mkdir("res_dir")
               all_data = []
               for issue_number in [93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109]:
                 conn = http.client.HTTPSConnection("api.github.com")
                 conn.request("GET","/repos/amir9979/HungaBunga/issues/{0}/comments".format(issue_number), "", {"User-Agent":"amir9979" , "Accept":"application/vnd.github.v3+json", "Authorization":"token ${{ secrets.GITHUB_TOKEN }}"})
                 response = list(map(lambda x: x['body'], json.loads(conn.getresponse().read())))
-                print(response)
+                total_data = []
                 for x in response:
                   try:
+                    params = json.loads(x.splitlines()[0].replace('best params: ', ''))
+                    score = json.loads(x.splitlines()[1])
+                    params.update(score)
+                    total_data.append(params)
                     all_data.append(json.loads(x.splitlines()[1]))
                   except:
                     pass
-              pd.DataFrame(all_data).to_csv("results.csv", index=False)
+              pd.DataFrame(all_data).to_csv(r"res_dir\results.csv", index=False)
+              with open(r"res_dir\results.json", "w") as f:
+                json.dump(total_data, f)
         - name: Upload results to release
           uses: svenstaro/upload-release-action@v1-release
           with:
             repo_token: ${{ secrets.GITHUB_TOKEN }}
-            file: results.csv
+            file: res_dir
             asset_name: ${{github.event.inputs.ReleaseName}}.csv
             tag: ${{github.event.inputs.ReleaseName}}.csv
