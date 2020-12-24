@@ -61,5 +61,5 @@ jobs:
           with:
             repo_token: ${{ secrets.GITHUB_TOKEN }}
             file: results.csv
-            asset_name: classifiers.csv
-            tag: classifiers.csv
+            asset_name: classifiers2.csv
+            tag: classifiers2.csv
