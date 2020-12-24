@@ -51,10 +51,8 @@ jobs:
                 response = list(map(lambda x: x['body'], json.loads(conn.getresponse().read())))
                 print(response)
                 for x in response:
-                  try: 
-                    print(x)
-                    print(x.splitlines())
-                    all_data.append(json.loads(x))
+                  try:
+                    all_data.append(json.loads(x.splitlines()[1]))
                   except:
                     pass
               pd.DataFrame(all_data).to_csv("results.csv", index=False)
