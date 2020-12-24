@@ -49,7 +49,7 @@ jobs:
                     a = a[a.index('{'):]
                     print('a', a)
                     print('b', b)
-                    params = eval(json.loads(a))
+                    params = eval(a)
                     score = json.loads(b)
                     params.update(score)
                     total_data.append(params)
