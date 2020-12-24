@@ -51,9 +51,8 @@ jobs:
                     print('b', b)
                     params = eval(a)
                     score = json.loads(b)
-                    params.update(score)
-                    total_data.append(params)
-                    all_data.append(json.loads(b))
+                    total_data.append(dict(list(params.items()) + list(score.items())))
+                    all_data.append(score)
                   except Exception as e:
                     raise e
               pd.DataFrame(all_data).to_csv(r"res_dir\results.csv", index=False)
