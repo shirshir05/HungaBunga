@@ -51,7 +51,8 @@ jobs:
                     print('b', b)
                     params = eval(a)
                     score = json.loads(b)
-                    total_data.append(dict(list(params.items()) + list(score.items())))
+                    r = dict(list(params.items()) + list(score.items()))
+                    total_data.append(r)
                     all_data.append(score)
                   except Exception as e:
                     raise e
