@@ -17,7 +17,7 @@ def pr_auc_score(y_true, y_score):
 
 def eval(model, classes, X, y):
     predictions_proba = list(zip(*model.predict_proba(X)))
-    y_prob = dict(zip(classes, predictions_proba))[1]
+    y_prob = dict(zip(classes, predictions_proba))[0]
     return pr_auc_score(y, y_prob)
 
 
