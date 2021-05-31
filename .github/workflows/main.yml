@@ -47,7 +47,7 @@ jobs:
 
       # Runs a single command using the runners shell
       - name: execute
-        run: python main.py ${{github.event.issue.title}}  ${{ matrix.ind }} > out.txt
+        run: python main.py ${{camel}}  ${{ matrix.ind }} > out.txt
         
       - name: add valids as a comment
         uses: actions/github-script@0.5.0
