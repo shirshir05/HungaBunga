@@ -28,6 +28,7 @@ from sklearn.utils.testing import all_estimators
 from functools import reduce
 from .core import *
 from .params import *
+import itertools as it
 
 
 linear_models_n_params = [
@@ -121,13 +122,14 @@ bayes_models_n_params = [
 
 nn_models_n_params = [
     (MLPClassifier,
-     { 'hidden_layer_sizes': [(16,), (64,), (100,), (32, 32)],
-       'activation': ['identity', 'logistic', 'tanh', 'relu'],
+     { 'hidden_layer_sizes': [(128,), (512,), (128, 512, ), (128, 128, ), (512, 512, ),  (64, 128, 512)],
+       # 'activation': ['logistic', 'tanh', 'relu'],
+        'activation': ['relu'],
        'alpha': alpha, 'learning_rate': learning_rate, 'tol': tol, 'warm_start': warm_start,
-       'batch_size': ['auto', 50],
-       'max_iter': [1000],
-       'early_stopping': [True, False],
-       'epsilon': [1e-8, 1e-5]
+       'batch_size': ['auto', 64],
+       'max_iter': [2],
+       'early_stopping': [True],
+       'solver': ['sgd', 'adam']
        })
 ]
 
@@ -191,33 +193,39 @@ best = [
       })
 ]
 
-def run_all_classifiers(x, y, small = True, normalize_x = True, n_jobs=cpu_count()-1, brain=False, test_size=0.2, n_splits=5, upsample=True, scoring=None, verbose=False, grid_search=True, ind=None):
-    all_params = (linear_models_n_params_small if small else linear_models_n_params) +  (nn_models_n_params_small if small else nn_models_n_params) + ([] if small else gaussianprocess_models_n_params) + neighbor_models_n_params + (svm_models_n_params_small if small else svm_models_n_params) + (tree_models_n_params_small if small else tree_models_n_params)
-    all_grid_params = dict(reduce(list.__add__, list(map(lambda x: list(x[1].items()), all_params)), []))
-    estimators = all_estimators()
-    proba = []
-    for name, class_ in estimators:
-        if hasattr(class_, 'predict_proba'):
-            try:
-                params = {}
-                for k, v in class_().get_params().items():
-                    p = [v]
-                    if k in all_grid_params:
-                        p.extend(all_grid_params[k])
-                    params[k] = p
-                proba.append((class_, params))
-            except Exception as e:
-                pass
-    all_params.extend(proba)
-    for m, p in all_params:
-        m_params = m().get_params()
-        for param in p:
-            if param not in m_params:
-                print(m, param)
-    if ind:
-        # all_params = [best[int(ind)]]
-        all_params = [all_params[int(ind)]]
-    return main_loop(all_params, StandardScaler().fit_transform(x) if normalize_x else x, y, isClassification=True, n_jobs=n_jobs, verbose=verbose, brain=brain, test_size=test_size, n_splits=n_splits, upsample=upsample, scoring=scoring, grid_search=grid_search)
+def run_all_classifiers(x, y, small = False, normalize_x = False, n_jobs=cpu_count()-1, brain=False, test_size=0.2, n_splits=5, upsample=True, scoring=None, verbose=False, grid_search=False, ind=0):
+    all_params = (nn_models_n_params_small if small else nn_models_n_params)
+    # all_grid_params = dict(reduce(list.__add__, list(map(lambda x: list(x[1].items()), all_params)), []))
+    # estimators = all_estimators()
+    # estimators = [('MLP', MLPClassifier)]
+
+    varNames = sorted(all_params[0][1])
+    combinations = [dict(zip(varNames, prod)) for prod in it.product(*(all_params[0][1][varName] for varName in varNames))]
+    clf = MLPClassifier(**combinations[ind])
+
+    # proba = []
+    # for name, class_ in estimators:
+    #     if hasattr(class_, 'predict_proba'):
+    #         try:
+    #             params = {}
+    #             for k, v in class_().get_params().items():
+    #                 p = [v]
+    #                 if k in all_grid_params:
+    #                     p.extend(all_grid_params[k])
+    #                 params[k] = p
+    #             proba.append((class_, params))
+    #         except Exception as e:
+    #             pass
+    # all_params.extend(proba)
+    # for m, p in all_params:
+    #     m_params = m().get_params()
+    #     for param in p:
+    #         if param not in m_params:
+    #             print(m, param)
+    # if ind:
+    #     # all_params = [best[int(ind)]]
+    #     all_params = [all_params[int(ind)]]
+    return combinations[ind], main_loop(clf, StandardScaler().fit_transform(x) if normalize_x else x, y, isClassification=True, n_jobs=n_jobs, verbose=verbose, brain=brain, test_size=test_size, n_splits=n_splits, upsample=upsample, scoring=scoring, grid_search=grid_search)
 
 def run_one_classifier(x, y, small = True, normalize_x = True, n_jobs=cpu_count()-1, brain=False, test_size=0.2, n_splits=5, upsample=True, scoring=None, verbose=False, grid_search=True):
     all_params = (linear_models_n_params_small if small else linear_models_n_params) +  (nn_models_n_params_small if small else nn_models_n_params) + ([] if small else gaussianprocess_models_n_params) + neighbor_models_n_params + (svm_models_n_params_small if small else svm_models_n_params) + (tree_models_n_params_small if small else tree_models_n_params)
@@ -240,10 +248,12 @@ class HungaBungaClassifier(ClassifierMixin):
         self.grid_search = grid_search
         self.ind = ind
         self.res = None
+        self.combination = None
         super(HungaBungaClassifier, self).__init__()
 
     def fit(self, x, y):
-        self.model, self.res = run_all_classifiers(x, y, normalize_x=self.normalize_x, test_size=self.test_size, n_splits=self.n_splits, upsample=self.upsample, scoring=self.scoring, verbose=self.verbose, brain=self.brain, n_jobs=self.n_jobs, grid_search=self.grid_search, ind=self.ind)
+        ans = run_all_classifiers(x, y, normalize_x=self.normalize_x, test_size=self.test_size, n_splits=self.n_splits, upsample=self.upsample, scoring=self.scoring, verbose=self.verbose, brain=self.brain, n_jobs=self.n_jobs, grid_search=self.grid_search, ind=self.ind)
+        self.combination, self.model, self.res = ans[0], ans[1][0], ans[1][1]
         return self
 
     def predict(self, x):

@@ -1,29 +1,43 @@
-
 import random
 
+from sklearn.metrics import confusion_matrix
 from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
 
-from hunga_bunga import HungaBungaClassifier, HungaBungaRegressor, HungaBungaZeroKnowledge, HungaBungaRandomClassifier, HungaBungaRandomRegressor
+from hunga_bunga import HungaBungaClassifier, HungaBungaRegressor, HungaBungaZeroKnowledge, HungaBungaRandomClassifier, \
+    HungaBungaRandomRegressor
 import pandas as pd
 import sys
 import os
 # from tpot import TPOTClassifier
 import json
 import sklearn.metrics as metrics
-
+import numpy as np
 
 def pr_auc_score(y_true, y_score):
     precision, recall, thresholds = metrics.precision_recall_curve(y_true.to_list(), y_score)
     return metrics.auc(recall, precision)
+
 
 def f1_score(y_true, y_score):
     return metrics.f1_score(y_true, y_score)
 
 
 def eval(model, classes, X, y):
+    scores = {}
     predictions_proba = list(zip(*model.predict_proba(X)))
-    y_prob = dict(zip(classes, predictions_proba))[0]
-    return pr_auc_score(y, y_prob)
+    y_prob_true = dict(zip(classes, predictions_proba))[1]
+    predictions = model.predict(X)
+
+    scores['accuracy_score'] = metrics.accuracy_score(y, predictions)
+    scores['precision_score'] = metrics.precision_score(y, predictions)
+    scores['recall_score'] = metrics.recall_score(y, predictions)
+    scores['f1_score'] = metrics.f1_score(y, predictions)
+    scores['roc_auc_score'] = metrics.roc_auc_score(y, y_prob_true)
+    scores['pr_auc_score'] = pr_auc_score(y, y_prob_true)
+    scores['tn'], scores['fp'], scores['fn'], scores['tp'] =[int(i) for i in list(confusion_matrix(y, predictions).ravel())]
+
+    return scores
 
 
 def preprocessing(path):
@@ -72,27 +86,32 @@ def preprocessing(path):
     return df
 
 
-def main(project_name, ind=None):
-    # df = preprocessing(r"dataset\{0}\all_data.csv".format(project_name))
+def main(project_name, ind=0):
+    # df = preprocessing(r"dataset\{0}\all_data.csv".format(project_name)).to_csv(r"dataset\{0}\preprocessing.csv".format(project_name))
     df = pd.read_csv(r"dataset\{0}\preprocessing.csv".format(project_name))
-
-    print(df.shape)
+    # print(df.shape)
 
     df.to_csv(r"dataset\{0}\preprocessing.csv".format(project_name))
     y = df.pop('commit insert bug?')
     X = df
 
-
     training_X, testing_X, training_y, testing_y = train_test_split(X, y, test_size=.2, random_state=12, stratify=y)
-    # testing = pd.read_csv(os.path.normpath(os.path.realpath(r"dataset\{0}\classes\testing.csv".format(project_name))), sep=';')
-    # training_y = training['Bugged'].apply(lambda x: 1 if x else 0)
-    # training_X = training.drop('Bugged', axis=1)
-    # testing_y = testing['Bugged'].apply(lambda x: 1 if x else 0)
-    # testing_X = testing.drop('Bugged', axis=1)
-    clf = HungaBungaClassifier(brain=True, ind=ind, scoring=metrics.make_scorer(f1_score, needs_proba=True))
+
+    scaler = StandardScaler()
+    scaler.fit(training_X)
+    training_X = pd.DataFrame(scaler.transform(training_X), columns=training_X.columns)
+    testing_X = pd.DataFrame(scaler.transform(testing_X), columns=testing_X.columns)
+
+    clf = HungaBungaClassifier(brain=True, ind=int(ind), scoring=metrics.make_scorer(f1_score, needs_proba=True))
     clf.fit(training_X, training_y)
     model = clf.model
-    print(json.dumps({'model': model.__class__.__name__, 'score': '%0.3f' % eval(model, model.classes_, testing_X, testing_y)}))
+    score = eval(model, model.classes_, testing_X, testing_y)
+    # print(json.dumps({'model': clf.combination, 'score': '%0.3f' % score}))
+    print(json.dumps({'model': clf.combination}))
+    print(json.dumps({'score': score}))
+    with open(r"bic_scores.json", 'w') as f:
+        json.dump(clf.combination, f)
+        json.dump(score, f)
 
     # # tpot = TPOTClassifier(max_time_mins=1, scoring=metrics.make_scorer(pr_auc_score, needs_proba=True))
     # # tpot.fit(training_X, training_y)
@@ -103,6 +122,7 @@ def main(project_name, ind=None):
     # #         classes = s[1].classes_
     # # print(json.dumps({'winner': model.__class__.__name__, 'score': '%0.3f' % eval(tpot, classes, testing_X, testing_y)}))
     #
+
 
 if __name__ == "__main__":
     ind = None

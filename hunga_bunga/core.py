@@ -94,39 +94,53 @@ def pr_auc_score(y_true, y_score):
     return metrics.auc(recall, precision)
 
 
+def f1_score(y_true, y_score):
+    return metrics.f1_score(y_true, y_score)
+
+
 def main_loop(models_n_params, x, y, isClassification, test_size = 0.2, n_splits = 5, random_state=None, upsample=True, scoring=None, verbose=True, n_jobs =cpu_count() - 1, brain=False, grid_search=True):
-    def cv_(): return cv_clf(x, y, test_size, n_splits, random_state, upsample) if isClassification else cv_reg(x, test_size, n_splits, random_state)
+    def cv_():
+        return cv_clf(x, y, test_size, n_splits, random_state, upsample) if isClassification else cv_reg(x, test_size, n_splits, random_state)
     res = []
     num_features = x.shape[1]
-    scoring = scoring or (metrics.make_scorer(pr_auc_score, needs_proba=True) if isClassification else 'neg_mean_squared_error')
+    scoring = scoring or (metrics.make_scorer(f1_score, needs_proba=True) if isClassification else 'neg_mean_squared_error')
     # if brain: print('Scoring criteria:', scoring)
-    for i, (clf_Klass, parameters) in enumerate(tqdm(models_n_params)):
-        try:
-            # if brain: print('-'*15, 'model %d/%d' % (i+1, len(models_n_params)), '-'*15)
-            # if brain: print(clf_Klass.__name__)
-            if clf_Klass == KMeans: parameters['n_clusters'] = [len(np.unique(y))]
-            elif clf_Klass in TREE_N_ENSEMBLE_MODELS: parameters['max_features'] = [v for v in parameters['max_features'] if v is None or type(v)==str or v<=num_features]
-            if grid_search: clf_search = GridSearchCVProgressBar(clf_Klass(), parameters, scoring, cv=cv_(), n_jobs=n_jobs)
-            else: clf_search = RandomizedSearchCVProgressBar(clf_Klass(), parameters, scoring, cv=cv_(), n_jobs=n_jobs)
-            clf_search.fit(x, y)
-            timespent = 0#timeit(clf_Klass, clf_search.best_params_, x, y)
-            # if brain: print('best score:', clf_search.best_score_, 'time/clf: %0.3f seconds' % timespent)
-            if brain: print('best params:', clf_search.best_params_)
-            if verbose:
-                print('validation scores:', clf_search.cv_results_['mean_test_score'])
-                print('training scores:', clf_search.cv_results_['mean_train_score'])
-            res.append((clf_search.best_estimator_, clf_search.best_score_, timespent))
-        except Exception as e:
-            traceback.print_exc()
-            res.append((clf_Klass(), -np.inf, np.inf))
+    models_n_params.fit(x, y)
+    # res.append((models_n_params.best_estimator_, models_n_params.best_score_, timespent))
+    # for i, (clf_Klass, parameters) in enumerate(tqdm(models_n_params)):
+    #     try:
+    #         # if brain: print('-'*15, 'model %d/%d' % (i+1, len(models_n_params)), '-'*15)
+    #         # if brain: print(clf_Klass.__name__)
+    #         if clf_Klass == KMeans:
+    #             parameters['n_clusters'] = [len(np.unique(y))]
+    #         elif clf_Klass in TREE_N_ENSEMBLE_MODELS:
+    #             parameters['max_features'] = [v for v in parameters['max_features'] if v is None or type(v)==str or v<=num_features]
+    #         if grid_search:
+    #             clf_search = GridSearchCVProgressBar(clf_Klass(), parameters, scoring, cv=cv_(), n_jobs=n_jobs)
+    #         else:
+    #             clf_search = RandomizedSearchCVProgressBar(clf_Klass(), parameters, scoring, cv=cv_(), n_jobs=n_jobs)
+    #         clf_search.fit(x, y)
+    #         timespent = 0
+    #         #timeit(clf_Klass, clf_search.best_params_, x, y)
+    #         # if brain: print('best score:', clf_search.best_score_, 'time/clf: %0.3f seconds' % timespent)
+    #         if brain:
+    #             print('best params:', clf_search.best_params_)
+    #         if verbose:
+    #             print('validation scores:', clf_search.cv_results_['mean_test_score'])
+    #             print('training scores:', clf_search.cv_results_['mean_train_score'])
+    #         res.append((clf_search.best_estimator_, clf_search.best_score_, timespent))
+    #     except Exception as e:
+    #         traceback.print_exc()
+    #         res.append((clf_Klass(), -np.inf, np.inf))
     # if brain: print('='*60)
     # if brain: print(tabulate([[m.__class__.__name__, '%.3f'%s, '%.3f'%t] for m, s, t in res], headers=['Model', scoring, 'Time/clf (s)']))
-    winner_ind = np.argmax([v[1] for v in res])
-    winner = res[winner_ind][0]
+    # winner_ind = np.argmax([v[1] for v in res])
+    # winner = res[winner_ind][0]
     # if brain: print('='*60)
     # if brain: print('The winner is: %s with score %0.3f.' % (winner.__class__.__name__, res[winner_ind][1]))
     # if brain: print(json.dumps({'winner': winner.__class__.__name__, 'score': '%0.3f.' % res[winner_ind][1]}))
-    return winner, res
+    # return winner, res
+    return models_n_params, None
 
 
 
