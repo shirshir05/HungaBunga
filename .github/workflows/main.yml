@@ -51,7 +51,7 @@ jobs:
           # Artifact name
           name: data_${{matrix.ind}}
           # A file, directory or wildcard pattern that describes what to upload
-          path: ./
+          path: ./bic_scores.json
           
           
 #       - name: add valids as a comment
