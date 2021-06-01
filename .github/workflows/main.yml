@@ -44,21 +44,30 @@ jobs:
       # Runs a single command using the runners shell
       - name: execute
         run: python main.py camel  ${{ matrix.ind }} > out.txt
-        
-      - name: add valids as a comment
-        uses: actions/github-script@0.5.0
+      - name: Upload data
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v2
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const fs = require("fs");
-            const path = "out.txt";
-            const text = fs.readFileSync(path).toString();
-            github.issues.createComment({
-              issue_number: ${{matrix.ind }},
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: text
-              })
+          # Artifact name
+          name: data_${{matrix.ind}}
+          # A file, directory or wildcard pattern that describes what to upload
+          path: ./data
+          
+          
+#       - name: add valids as a comment
+#         uses: actions/github-script@0.5.0
+#         with:
+#           github-token: ${{ secrets.GITHUB_TOKEN }}
+#           script: |
+#             const fs = require("fs");
+#             const path = "out.txt";
+#             const text = fs.readFileSync(path).toString();
+#             github.issues.createComment({
+#               issue_number: ${{matrix.ind }},
+#               owner: context.repo.owner,
+#               repo: context.repo.repo,
+#               body: text
+#               })
 
   aggregate:
       runs-on: windows-latest
