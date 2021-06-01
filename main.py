@@ -107,11 +107,9 @@ def main(project_name, ind=0):
     model = clf.model
     score = eval(model, model.classes_, testing_X, testing_y)
     # print(json.dumps({'model': clf.combination, 'score': '%0.3f' % score}))
-    print(json.dumps({'model': clf.combination}))
-    print(json.dumps({'score': score}))
+    print(json.dumps({**clf.combination, **score}))
     with open(r"bic_scores.json", 'w') as f:
-        json.dump(clf.combination, f)
-        json.dump(score, f)
+        json.dump({**clf.combination, **score}, f)
 
     # # tpot = TPOTClassifier(max_time_mins=1, scoring=metrics.make_scorer(pr_auc_score, needs_proba=True))
     # # tpot.fit(training_X, training_y)
