@@ -122,14 +122,15 @@ bayes_models_n_params = [
 
 nn_models_n_params = [
     (MLPClassifier,
-     { 'hidden_layer_sizes': [(128,), (512,), (128, 512, ), (128, 128, ), (512, 512, ),  (64, 128, 512)],
-       # 'activation': ['logistic', 'tanh', 'relu'],
-        'activation': ['relu'],
+     {'hidden_layer_sizes': [(512, 1024,), (128, 512,), (128, 128,), (512, 512,), (1024, 512), (64, 128, 512,),
+                             (128, 512, 512), (128, 128, 512)],
+       'activation': ['logistic', 'tanh', 'relu'],
+       #  'activation': ['relu'],
        'alpha': alpha, 'learning_rate': learning_rate, 'tol': tol, 'warm_start': warm_start,
-       'batch_size': ['auto', 64],
+       'batch_size': ['auto', 32, 64, 128],
        'max_iter': [1000],
        'early_stopping': [True],
-       'solver': ['sgd', 'adam']
+       'solver': ['adam']
        })
 ]
 
