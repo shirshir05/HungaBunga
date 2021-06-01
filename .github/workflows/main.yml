@@ -51,7 +51,7 @@ jobs:
           # Artifact name
           name: data_${{matrix.ind}}
           # A file, directory or wildcard pattern that describes what to upload
-          path: ./data
+          path: ./
           
           
 #       - name: add valids as a comment
@@ -69,53 +69,53 @@ jobs:
 #               body: text
 #               })
 
-  aggregate:
-      runs-on: windows-latest
-      needs: build
+#   aggregate:
+#       runs-on: windows-latest
+#       needs: build
       
-      steps:
-        - name: Install dependencies
-          run: |
-            python -m pip install --upgrade pip
-            pip install numpy 
-            pip install scipy
-            pip install joblib
-            pip install scikit-learn 
-            pip install tabulate   
-            pip install pandas
-            pip install pytest
-            pip install tqdm
+#       steps:
+#         - name: Install dependencies
+#           run: |
+#             python -m pip install --upgrade pip
+#             pip install numpy 
+#             pip install scipy
+#             pip install joblib
+#             pip install scikit-learn 
+#             pip install tabulate   
+#             pip install pandas
+#             pip install pytest
+#             pip install tqdm
 
-        - name: add all valids to one file
-          shell: python
-          run: |
-              import json
-              import os
-              import csv
-              import http.client
-              import pandas as pd
-#              with open(os.getenv('GITHUB_EVENT_PATH')) as json_file:
-#                            data = json.load(json_file)
-#                            issue_number = data['issue']['number']
-#              conn = http.client.HTTPSConnection("api.github.com")
-#              conn.request("GET","/repos/amir9979/HungaBunga/issues/{0}/comments".format(issue_number), "", {"User-Agent":"amir9979" , "Accept":"application/vnd.github.v3+json", "Authorization":"token ${{ secrets.GITHUB_TOKEN }}"})
-#              response = json.loads(conn.getresponse().read())
-#              classifiers = pd.DataFrame(list(map(lambda x: json.loads(x['body']), response)))
-#              classifiers.to_csv("results.csv", index=False)
+#         - name: add all valids to one file
+#           shell: python
+#           run: |
+#               import json
+#               import os
+#               import csv
+#               import http.client
+#               import pandas as pd
+# #              with open(os.getenv('GITHUB_EVENT_PATH')) as json_file:
+# #                            data = json.load(json_file)
+# #                            issue_number = data['issue']['number']
+# #              conn = http.client.HTTPSConnection("api.github.com")
+# #              conn.request("GET","/repos/amir9979/HungaBunga/issues/{0}/comments".format(issue_number), "", {"User-Agent":"amir9979" , "Accept":"application/vnd.github.v3+json", "Authorization":"token ${{ secrets.GITHUB_TOKEN }}"})
+# #              response = json.loads(conn.getresponse().read())
+# #              classifiers = pd.DataFrame(list(map(lambda x: json.loads(x['body']), response)))
+# #              classifiers.to_csv("results.csv", index=False)
 
-        - name: Upload results to release
-          uses: svenstaro/upload-release-action@v1-release
-          with:
-            repo_token: ${{ secrets.GITHUB_TOKEN }}
-            file: results.csv
-            asset_name: ${{github.event.issue.title}}_${{github.event.issue.number}}.csv
-            tag: ${{github.event.issue.title}}_${{github.event.issue.number}}.csv
+#         - name: Upload results to release
+#           uses: svenstaro/upload-release-action@v1-release
+#           with:
+#             repo_token: ${{ secrets.GITHUB_TOKEN }}
+#             file: results.csv
+#             asset_name: ${{github.event.issue.title}}_${{github.event.issue.number}}.csv
+#             tag: ${{github.event.issue.title}}_${{github.event.issue.number}}.csv
 
 
-        - name: Close Issue
-          continue-on-error: true
-          uses: peter-evans/close-issue@v1
-          with:
-            comment: |
-              The issue you have reported seems to be resolved now.
-              The extracted data can be found at releases.
+#         - name: Close Issue
+#           continue-on-error: true
+#           uses: peter-evans/close-issue@v1
+#           with:
+#             comment: |
+#               The issue you have reported seems to be resolved now.
+#               The extracted data can be found at releases.
