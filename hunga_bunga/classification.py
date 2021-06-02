@@ -128,7 +128,7 @@ nn_models_n_params = [
        #  'activation': ['relu'],
        'alpha': alpha, 'learning_rate': learning_rate, 'tol': tol, 'warm_start': warm_start,
        'batch_size': ['auto', 32, 64, 128],
-       'max_iter': [1000],
+       'max_iter': [1],
        'early_stopping': [True],
        'solver': ['adam']
        })
