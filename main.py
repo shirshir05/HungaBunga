@@ -49,7 +49,13 @@ def preprocessing(path):
     del df["file"]
     del df['added_lines+removed_lines']
     del df['added_lines-removed_lines']
-
+    del df['commit_sha']
+    del df['modification_type']
+    del df['is_java']
+    del df['is_test']
+    del df['added_lines']
+    del df['deleted_lines']
+    print(df.shape)
     # Remove commit that doesn't change lines
     df = df[df['current_changed_used_lines'] != 0]
     print(f"Remove commit that doesn't change lines")
@@ -87,11 +93,11 @@ def preprocessing(path):
 
 
 def main(project_name, ind=0):
-    # df = preprocessing(r"dataset\{0}\all_data.csv".format(project_name)).to_csv(r"dataset\{0}\preprocessing.csv".format(project_name))
-    df = pd.read_csv(r"dataset\{0}\preprocessing.csv".format(project_name))
+    # df = preprocessing(r"dataset\{0}\java_diff_without_modification_file.csv".format(project_name)).to_csv(r"dataset\{0}\preprocessing_modification_file.csv".format(project_name))
+    df = pd.read_csv(r"dataset\{0}\preprocessing_modification_file.csv".format(project_name))
+    df = df.iloc[:, 1:]
     # print(df.shape)
 
-    df.to_csv(r"dataset\{0}\preprocessing.csv".format(project_name))
     y = df.pop('commit insert bug?')
     X = df
 
@@ -111,15 +117,6 @@ def main(project_name, ind=0):
     with open(r"./results/bic_scores_" + str(ind) + ".json", 'w') as f:
         json.dump({**clf.combination, **score}, f)
 
-    # # tpot = TPOTClassifier(max_time_mins=1, scoring=metrics.make_scorer(pr_auc_score, needs_proba=True))
-    # # tpot.fit(training_X, training_y)
-    # # model = tpot.fitted_pipeline_._final_estimator
-    # # classes = None
-    # # for s in tpot.fitted_pipeline_.steps:
-    # #     if hasattr(s[1], 'classes_'):
-    # #         classes = s[1].classes_
-    # # print(json.dumps({'winner': model.__class__.__name__, 'score': '%0.3f' % eval(tpot, classes, testing_X, testing_y)}))
-    #
 
 
 if __name__ == "__main__":
