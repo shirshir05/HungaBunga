@@ -106,6 +106,7 @@ def main_loop(models_n_params, x, y, isClassification, test_size = 0.2, n_splits
     scoring = scoring or (metrics.make_scorer(f1_score, needs_proba=True) if isClassification else 'neg_mean_squared_error')
     # if brain: print('Scoring criteria:', scoring)
     models_n_params.fit(x, y)
+
     # res.append((models_n_params.best_estimator_, models_n_params.best_score_, timespent))
     # for i, (clf_Klass, parameters) in enumerate(tqdm(models_n_params)):
     #     try:
@@ -140,6 +141,8 @@ def main_loop(models_n_params, x, y, isClassification, test_size = 0.2, n_splits
     # if brain: print('The winner is: %s with score %0.3f.' % (winner.__class__.__name__, res[winner_ind][1]))
     # if brain: print(json.dumps({'winner': winner.__class__.__name__, 'score': '%0.3f.' % res[winner_ind][1]}))
     # return winner, res
+
+
     return models_n_params, None
 
 

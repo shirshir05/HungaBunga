@@ -30,7 +30,7 @@ from .core import *
 from .params import *
 import itertools as it
 
-
+#region models
 linear_models_n_params = [
     (SGDClassifier,
      {'loss': ['log', 'modified_huber'],
@@ -120,20 +120,6 @@ bayes_models_n_params = [
     (GaussianNB, {})
 ]
 
-nn_models_n_params = [
-    (MLPClassifier,
-     {'hidden_layer_sizes': [(512, 1024,), (128, 512,), (128, 128,), (512, 512,), (1024, 512), (64, 128, 512,),
-                             (128, 512, 512), (128, 128, 512)],
-       'activation': ['logistic', 'tanh', 'relu'],
-       #  'activation': ['relu'],
-       'alpha': alpha, 'learning_rate': learning_rate, 'tol': tol, 'warm_start': warm_start,
-       'batch_size': ['auto', 32, 64, 128],
-       'max_iter': [1000],
-       'early_stopping': [True],
-       'solver': ['adam']
-       })
-]
-
 nn_models_n_params_small = [
     (MLPClassifier,
      { 'hidden_layer_sizes': [(64,), (32, 64)],
@@ -193,6 +179,30 @@ best = [
       'n_restarts_optimizer': [0, 1, 2, 3, 4],
       })
 ]
+
+#endregion
+
+
+nn_models_n_params = [
+    (MLPClassifier,
+     {'hidden_layer_sizes': [(128, 1024,), (512, 1024,), (128, 512,), (128, 128,), (512, 512,), (1024, 512,),
+                             (64, 128, 512,), (128, 512, 512,), (128, 128, 512,), (128, 128, 512, 1024, )],
+       # 'activation': ['relu'],
+       #  'solver': ['adam'],
+       # 'alpha': alpha,
+      # 'learning_rate': learning_rate, # Only used when solver='sgd',
+        'learning_rate_init': [0.001, 0.01, 0.1, 0.005],
+      # 'tol': tol,
+      'warm_start': warm_start,
+       # 'batch_size': ['auto'],
+       'max_iter': [1000],
+       # 'early_stopping': [True],
+      'shuffle': [False, True]
+
+       })
+]
+
+
 
 def run_all_classifiers(x, y, small = False, normalize_x = False, n_jobs=cpu_count()-1, brain=False, test_size=0.2, n_splits=5, upsample=True, scoring=None, verbose=False, grid_search=False, ind=0):
     all_params = (nn_models_n_params_small if small else nn_models_n_params)
