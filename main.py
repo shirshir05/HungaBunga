@@ -101,7 +101,7 @@ def main(project_name, ind=0):
     y = df.pop('commit insert bug?')
     X = df
 
-    training_X, testing_X, training_y, testing_y = train_test_split(X, y, test_size=.2, random_state=12, stratify=y)
+    training_X, testing_X, training_y, testing_y = train_test_split(X, y, test_size=.1, random_state=12, stratify=y)
 
     scaler = StandardScaler()
     scaler.fit(training_X)
@@ -117,6 +117,9 @@ def main(project_name, ind=0):
     with open(r"./results/bic_scores_" + str(ind) + ".json", 'w') as f:
         json.dump({**clf.combination, **score}, f)
 
+    import matplotlib.pyplot as plt
+    plt.plot(model.loss_curve_)
+    plt.savefig(r"./results/loss.png")
 
 
 if __name__ == "__main__":

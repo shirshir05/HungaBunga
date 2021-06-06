@@ -101,9 +101,9 @@ def f1_score(y_true, y_score):
 def main_loop(models_n_params, x, y, isClassification, test_size = 0.2, n_splits = 5, random_state=None, upsample=True, scoring=None, verbose=True, n_jobs =cpu_count() - 1, brain=False, grid_search=True):
     def cv_():
         return cv_clf(x, y, test_size, n_splits, random_state, upsample) if isClassification else cv_reg(x, test_size, n_splits, random_state)
-    res = []
-    num_features = x.shape[1]
-    scoring = scoring or (metrics.make_scorer(f1_score, needs_proba=True) if isClassification else 'neg_mean_squared_error')
+    # res = []
+    # num_features = x.shape[1]
+    # scoring = scoring or (metrics.make_scorer(f1_score, needs_proba=True) if isClassification else 'neg_mean_squared_error')
     # if brain: print('Scoring criteria:', scoring)
     models_n_params.fit(x, y)
 
