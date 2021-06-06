@@ -42,6 +42,7 @@ jobs:
           pip install pandas
           pip install pytest
           pip install tqdm
+          pip install matplotlib
 
       # Runs a single command using the runners shell
       - name: execute
