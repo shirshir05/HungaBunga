@@ -119,7 +119,7 @@ def main(project_name, ind=0):
 
     import matplotlib.pyplot as plt
     plt.plot(model.loss_curve_)
-    plt.savefig(r"./results/loss_" +  + str(ind) + ".png")
+    plt.savefig(r"./results/loss_" + str(ind) + ".png")
 
 
 if __name__ == "__main__":
