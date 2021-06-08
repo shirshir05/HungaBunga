@@ -112,10 +112,10 @@ def main(project_name, ind=0):
     clf.fit(training_X, training_y)
     model = clf.model
 
-    # save the model to disk
-    import joblib
-    filename = r"./results/finalized_model" + str(ind) + ".sav"
-    joblib.dump(model, filename)
+    import pickle
+    # save the classifier
+    with open(r"./results/finalized_model" + str(ind) + ".pkl", 'wb') as fid:
+        pickle.dump(model, fid)
 
     # # load the model from disk
     # loaded_model = joblib.load(filename)
