@@ -93,7 +93,7 @@ def preprocessing(path):
 
 
 def main(project_name, ind=0):
-    # df = preprocessing(r"dataset\{0}\java_diff_without_modification_file.csv".format(project_name)).to_csv(r"dataset\{0}\preprocessing_modification_file.csv".format(project_name))
+    # df = preprocessing(r"dataset\{0}\java_diff_without_modification_file_new.csv".format(project_name)).to_csv(r"dataset\{0}\preprocessing_modification_file_new.csv".format(project_name))
     df = pd.read_csv(r"dataset\{0}\preprocessing_modification_file.csv".format(project_name))
     df = df.iloc[:, 1:]
     # print(df.shape)
@@ -119,7 +119,7 @@ def main(project_name, ind=0):
 
     import matplotlib.pyplot as plt
     plt.plot(model.loss_curve_)
-    plt.savefig(r"./results/loss_" + str(ind) + ".png")
+    plt.savefig(r"./results/loss_" + str(ind) + "_" + str(len(model.loss_curve_)) + ".png")
 
 
 if __name__ == "__main__":
