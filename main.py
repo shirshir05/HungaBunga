@@ -111,6 +111,15 @@ def main(project_name, ind=0):
     clf = HungaBungaClassifier(brain=True, ind=int(ind), scoring=metrics.make_scorer(f1_score, needs_proba=True))
     clf.fit(training_X, training_y)
     model = clf.model
+
+    # save the model to disk
+    import joblib
+    filename = r"./results/finalized_model" + str(ind) + ".sav"
+    joblib.dump(model, filename)
+
+    # # load the model from disk
+    # loaded_model = joblib.load(filename)
+
     score = eval(model, model.classes_, testing_X, testing_y)
     # print(json.dumps({'model': clf.combination, 'score': '%0.3f' % score}))
     print(json.dumps({**clf.combination, **score}))
