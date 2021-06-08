@@ -112,14 +112,6 @@ def main(project_name, ind=0):
     clf.fit(training_X, training_y)
     model = clf.model
 
-    import pickle
-    # save the classifier
-    with open(r"./results/finalized_model" + str(ind) + ".pkl", 'wb') as fid:
-        pickle.dump(model, fid)
-
-    # # load the model from disk
-    # loaded_model = joblib.load(filename)
-
     score = eval(model, model.classes_, testing_X, testing_y)
     # print(json.dumps({'model': clf.combination, 'score': '%0.3f' % score}))
     print(json.dumps({**clf.combination, **score}))
@@ -129,6 +121,13 @@ def main(project_name, ind=0):
     import matplotlib.pyplot as plt
     plt.plot(model.loss_curve_)
     plt.savefig(r"./results/loss_" + str(ind) + "_" + str(len(model.loss_curve_)) + ".png")
+
+    # Save
+    import pickle
+    s = pickle.dumps(clf)
+    pickle.dump(model, open(r"./results/finalized_model" + str(ind) + ".pkl", 'wb'))
+    import joblib
+    joblib.dump(model, r"./results/finalized_model" + str(ind) + ".sav")
 
 
 if __name__ == "__main__":
