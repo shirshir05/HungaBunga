@@ -135,7 +135,7 @@ def dense_model(model, name,testing_X, testing_y):
    predictions_proba = model.predict(testing_X)[:, 0]
    predictions = np.where(predictions_proba < 0.5, 0, 1)
    score_dense = evaluate_dense(testing_y, predictions, None, predictions_proba, tensor=True)
-   with open(r"./results/bic_scores_dense_" + name + ".json", 'w') as f:
+   with open(r"bic_scores_dense_" + name + ".json", 'w') as f:
        json.dump({**score_dense}, f)
 
 def main(project_name, ind=0):
@@ -161,23 +161,23 @@ def main(project_name, ind=0):
     score = eval(model, model.classes_, testing_X, testing_y)
     # print(json.dumps({'model': clf.combination, 'score': '%0.3f' % score}))
     print(json.dumps({**clf.combination, **score}))
-    with open(r"./results/bic_scores_" + str(ind) + ".json", 'w') as f:
+    with open(r"bic_scores_" + str(ind) + ".json", 'w') as f:
         json.dump({**clf.combination, **score}, f)
 
     # TODO: Save model
-    filename_pkl = r"./results/save_model_test" + str(ind) + ".pkl"
+    filename_pkl = r"save_model_test" + str(ind) + ".pkl"
     pickle.dump(model, open(filename_pkl, 'wb'))
     loaded_model = pickle.load(open(filename_pkl, 'rb'))
     score_pkl = eval(loaded_model, model.classes_, testing_X, testing_y)
-    with open(r"./results/bic_scores_score_pkl" + str(ind) + ".json", 'w') as f:
+    with open(r"bic_scores_score_pkl" + str(ind) + ".json", 'w') as f:
         json.dump({**clf.combination, **score_pkl}, f)
 
     import joblib
-    filename = r"./results/save_model_test" + str(ind) + ".sav"
+    filename = r"save_model_test" + str(ind) + ".sav"
     joblib.dump(model, filename)
     loaded_model = joblib.load(filename)
     score_sav = eval(loaded_model, model.classes_, testing_X, testing_y)
-    with open(r"./results/bic_scores_score_sav" + str(ind) + ".json", 'w') as f:
+    with open(r"bic_scores_score_sav" + str(ind) + ".json", 'w') as f:
         json.dump({**clf.combination, **score_sav}, f)
 
     dense_model(loaded_model, "load", testing_X, testing_y)
