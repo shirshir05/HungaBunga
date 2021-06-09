@@ -44,6 +44,7 @@ jobs:
           pip install tqdm
           pip install matplotlib
           pip install joblib
+          pip install tensorflow
 
       # Runs a single command using the runners shell
       - name: execute
