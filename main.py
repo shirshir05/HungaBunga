@@ -220,4 +220,4 @@ if __name__ == "__main__":
     ind = None
     if len(sys.argv) >= 3:
         ind = sys.argv[2]
-    main(sys.argv[1], int(ind))
+    main(sys.argv[1], ind)
