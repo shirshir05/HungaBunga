@@ -58,6 +58,21 @@ def eval(model, classes, X, y):
 
     return scores
 
+def preprocessing_bugzilla(path):
+    df = pd.read_csv(path)
+    if 'bugzilla' in path:
+        del df["transactionid"]
+        del df["commitdate"]
+        df = df.rename(columns={'bug': 'commit insert bug?'})
+    print(df.shape)
+    # Remove col that contain more than 95% zeros
+    df.replace(0, np.nan, inplace=True)
+    df.dropna(axis=1, how='any', thresh=0.05 * df.shape[1], inplace=True)
+    df.replace(np.nan, 0, inplace=True)
+    print(f"Remove col that contain more than 95% zeros")
+    print(df.shape)
+    df = df.drop_duplicates()
+    return df
 
 def preprocessing(path):
     df = pd.read_csv(path)
@@ -144,24 +159,36 @@ def dense_model(model, name, testing_X, testing_y):
 
 def main(project_name, ind=0):
     # df = preprocessing(r"dataset\{0}\java_diff_without_modification_file_new.csv".format(project_name)).to_csv(r"dataset\{0}\preprocessing_modification_file_new.csv".format(project_name))
-    df = pd.read_csv(r"dataset\{0}\preprocessing_modification_file.csv".format(project_name))
+
+    # # TODO: preprocessing_modification_file
+    # df = pd.read_csv(r"dataset\{0}\preprocessing_modification_file.csv".format(project_name))
+    # df = df.iloc[:, 1:]
+    # # print(df.shape)
+    # y = df.pop('commit insert bug?')
+    # X = df
+    # training_X, testing_X, training_y, testing_y = train_test_split(X, y, test_size=.1, random_state=12, stratify=y)
+
+    df = pd.read_csv(r"dataset\camel\train.csv")
     df = df.iloc[:, 1:]
-    # print(df.shape)
+    # del df['delta_ClassDeclaration']
+    y_train = df.pop('commit insert bug?')
+    X_train = df
 
-    y = df.pop('commit insert bug?')
-    X = df
+    df_test = pd.read_csv("dataset/camel/test.csv")
+    df_test = df_test.iloc[:, 1:]
+    # del df_test['delta_ClassDeclaration']
+    y_test = df_test.pop('commit insert bug?')
+    X_test = df_test
 
-    training_X, testing_X, training_y, testing_y = train_test_split(X, y, test_size=.1, random_state=12, stratify=y)
+    scaler = StandardScaler()
+    scaler.fit(X_train)
+    X_train = pd.DataFrame(scaler.transform(X_train))
+    X_test = pd.DataFrame(scaler.transform(X_test))
 
-    # scaler = StandardScaler()
-    # scaler.fit(training_X)
-    # training_X = pd.DataFrame(scaler.transform(training_X), columns=training_X.columns)
-    # testing_X = pd.DataFrame(scaler.transform(testing_X), columns=testing_X.columns)
-
-    scaler = MinMaxScaler((-1, 1))
-    scaler.fit(training_X)
-    training_X = pd.DataFrame(scaler.transform(training_X), columns=training_X.columns)
-    testing_X = pd.DataFrame(scaler.transform(testing_X), columns=testing_X.columns)
+    testing_X = X_test
+    testing_y = y_test
+    training_X = X_train
+    training_y = y_train
 
     clf = HungaBungaClassifier(brain=True, ind=int(ind), scoring=metrics.make_scorer(f1_score, needs_proba=True))
     clf.fit(training_X, training_y)
@@ -177,21 +204,21 @@ def main(project_name, ind=0):
     plt.plot(model.loss_curve_)
     plt.savefig(r"./results/loss_" + str(ind) + "_" + str(len(model.loss_curve_)) + ".png")
 
-    # TODO: Save model
-    filename_pkl = r"./results/save_model_test" + str(ind) + ".pkl"
-    pickle.dump(model, open(filename_pkl, 'wb'))
-    loaded_model = pickle.load(open(filename_pkl, 'rb'))
-    score_pkl = eval(loaded_model, model.classes_, testing_X, testing_y)
-    with open(r"./results/bic_scores_score_pkl" + str(ind) + ".json", 'w') as f:
-        json.dump({**clf.combination, **score_pkl}, f)
-
-    import joblib
-    filename = r"./results/save_model_test" + str(ind) + ".sav"
-    joblib.dump(model, filename)
-    loaded_model = joblib.load(filename)
-    score_sav = eval(loaded_model, model.classes_, testing_X, testing_y)
-    with open(r"./results/bic_scores_score_sav" + str(ind) + ".json", 'w') as f:
-        json.dump({**clf.combination, **score_sav}, f)
+    # # TODO: Save model
+    # filename_pkl = r"./results/save_model_test" + str(ind) + ".pkl"
+    # pickle.dump(model, open(filename_pkl, 'wb'))
+    # loaded_model = pickle.load(open(filename_pkl, 'rb'))
+    # score_pkl = eval(loaded_model, model.classes_, testing_X, testing_y)
+    # with open(r"./results/bic_scores_score_pkl" + str(ind) + ".json", 'w') as f:
+    #     json.dump({**clf.combination, **score_pkl}, f)
+    #
+    # import joblib
+    # filename = r"./results/save_model_test" + str(ind) + ".sav"
+    # joblib.dump(model, filename)
+    # loaded_model = joblib.load(filename)
+    # score_sav = eval(loaded_model, model.classes_, testing_X, testing_y)
+    # with open(r"./results/bic_scores_score_sav" + str(ind) + ".json", 'w') as f:
+    #     json.dump({**clf.combination, **score_sav}, f)
 
     # dense_model(loaded_model, "load", testing_X, testing_y)
     # dense_model(model, "real", testing_X, testing_y)
