@@ -157,7 +157,7 @@ def dense_model(model, name, testing_X, testing_y):
         json.dump({**score_dense}, f)
 
 
-def main(project_name, ind=0):
+def main(project_name, ind=0, rf=False):
     # df = preprocessing(r"dataset\{0}\java_diff_without_modification_file_new.csv".format(project_name)).to_csv(r"dataset\{0}\preprocessing_modification_file_new.csv".format(project_name))
 
     # # TODO: preprocessing_modification_file
@@ -191,7 +191,7 @@ def main(project_name, ind=0):
     training_y = y_train
 
     clf = HungaBungaClassifier(brain=True, ind=int(ind), scoring=metrics.make_scorer(f1_score, needs_proba=True))
-    clf.fit(training_X, training_y)
+    clf.fit(training_X, training_y, RF=rf)
     model = clf.model
 
     score = eval(model, model.classes_, testing_X, testing_y)
@@ -200,32 +200,33 @@ def main(project_name, ind=0):
     with open(r"./results/bic_scores_" + str(ind) + ".json", 'w') as f:
         json.dump({**clf.combination, **score}, f)
 
-    import matplotlib.pyplot as plt
-    plt.plot(model.loss_curve_)
-    plt.savefig(r"./results/loss_" + str(ind) + "_" + str(len(model.loss_curve_)) + ".png")
+    if not rf:
+        import matplotlib.pyplot as plt
+        plt.plot(model.loss_curve_)
+        plt.savefig(r"./results/loss_" + str(ind) + "_" + str(len(model.loss_curve_)) + ".png")
 
-    # # TODO: Save model
-    # filename_pkl = r"./results/save_model_test" + str(ind) + ".pkl"
-    # pickle.dump(model, open(filename_pkl, 'wb'))
-    # loaded_model = pickle.load(open(filename_pkl, 'rb'))
-    # score_pkl = eval(loaded_model, model.classes_, testing_X, testing_y)
-    # with open(r"./results/bic_scores_score_pkl" + str(ind) + ".json", 'w') as f:
-    #     json.dump({**clf.combination, **score_pkl}, f)
-    #
-    # import joblib
-    # filename = r"./results/save_model_test" + str(ind) + ".sav"
-    # joblib.dump(model, filename)
-    # loaded_model = joblib.load(filename)
-    # score_sav = eval(loaded_model, model.classes_, testing_X, testing_y)
-    # with open(r"./results/bic_scores_score_sav" + str(ind) + ".json", 'w') as f:
-    #     json.dump({**clf.combination, **score_sav}, f)
+        # # TODO: Save model
+        # filename_pkl = r"./results/save_model_test" + str(ind) + ".pkl"
+        # pickle.dump(model, open(filename_pkl, 'wb'))
+        # loaded_model = pickle.load(open(filename_pkl, 'rb'))
+        # score_pkl = eval(loaded_model, model.classes_, testing_X, testing_y)
+        # with open(r"./results/bic_scores_score_pkl" + str(ind) + ".json", 'w') as f:
+        #     json.dump({**clf.combination, **score_pkl}, f)
+        #
+        # import joblib
+        # filename = r"./results/save_model_test" + str(ind) + ".sav"
+        # joblib.dump(model, filename)
+        # loaded_model = joblib.load(filename)
+        # score_sav = eval(loaded_model, model.classes_, testing_X, testing_y)
+        # with open(r"./results/bic_scores_score_sav" + str(ind) + ".json", 'w') as f:
+        #     json.dump({**clf.combination, **score_sav}, f)
 
-    # dense_model(loaded_model, "load", testing_X, testing_y)
-    # dense_model(model, "real", testing_X, testing_y)
+        # dense_model(loaded_model, "load", testing_X, testing_y)
+        # dense_model(model, "real", testing_X, testing_y)
 
 
 if __name__ == "__main__":
     ind = None
-    if len(sys.argv) >= 3:
-        ind = sys.argv[2]
-    main(sys.argv[1], ind)
+    ind = sys.argv[2]
+    rf = bool(sys.argv[3])
+    main(sys.argv[1], ind, rf)

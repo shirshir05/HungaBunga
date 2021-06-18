@@ -218,6 +218,22 @@ best = [
 #       })
 # ]
 
+
+
+rf_models_n_params = [
+
+    (RandomForestClassifier,
+     {'criterion': ['gini', 'entropy'],
+      'max_features': max_features,  # The number of features to consider when looking for the best split:
+      'n_estimators': n_estimators,
+      'max_depth': max_depth,
+      'min_samples_split': min_samples_split,
+      'min_impurity_split': min_impurity_split,  # Threshold for early stopping in tree growth
+      'warm_start': warm_start,
+      'min_samples_leaf': min_samples_leaf,
+      })
+]
+
 nn_models_n_params = [
     (MLPClassifier,
      {'hidden_layer_sizes': [(512, 1024,), (128, 512,), (128, 128,), (512, 512,), (1024, 512), (64, 128, 512,),
@@ -254,8 +270,8 @@ nn_models_n_params = [
 
 
 def run_all_classifiers(x, y, small=False, normalize_x=False, n_jobs=cpu_count() - 1, brain=False, test_size=0.2,
-                        n_splits=5, upsample=True, scoring=None, verbose=False, grid_search=False, ind=0):
-    all_params = (nn_models_n_params_small if small else nn_models_n_params)
+                        n_splits=5, upsample=True, scoring=None, verbose=False, grid_search=False, ind=0, RF=False):
+    all_params = (nn_models_n_params_small if not RF else rf_models_n_params)
     # all_grid_params = dict(reduce(list.__add__, list(map(lambda x: list(x[1].items()), all_params)), []))
     # estimators = all_estimators()
     # estimators = [('MLP', MLPClassifier)]
@@ -263,7 +279,7 @@ def run_all_classifiers(x, y, small=False, normalize_x=False, n_jobs=cpu_count()
     varNames = sorted(all_params[0][1])
     combinations = [dict(zip(varNames, prod)) for prod in
                     it.product(*(all_params[0][1][varName] for varName in varNames))]
-    clf = MLPClassifier(**combinations[ind])
+    clf = all_params[0][0](**combinations[ind])
 
     # proba = []
     # for name, class_ in estimators:
@@ -323,10 +339,10 @@ class HungaBungaClassifier(ClassifierMixin):
         self.combination = None
         super(HungaBungaClassifier, self).__init__()
 
-    def fit(self, x, y):
+    def fit(self, x, y, RF=False):
         ans = run_all_classifiers(x, y, normalize_x=self.normalize_x, test_size=self.test_size, n_splits=self.n_splits,
                                   upsample=self.upsample, scoring=self.scoring, verbose=self.verbose, brain=self.brain,
-                                  n_jobs=self.n_jobs, grid_search=self.grid_search, ind=self.ind)
+                                  n_jobs=self.n_jobs, grid_search=self.grid_search, ind=self.ind, RF=RF)
         self.combination, self.model, self.res = ans[0], ans[1][0], ans[1][1]
         return self
 
