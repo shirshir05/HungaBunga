@@ -239,5 +239,6 @@ def main(project_name, ind=0, rf=False):
 if __name__ == "__main__":
     ind = None
     ind = sys.argv[2]
-    rf = bool(sys.argv[3])
+    import ast
+    rf = ast.literal_eval(sys.argv[3])
     main(sys.argv[1], ind, rf)
