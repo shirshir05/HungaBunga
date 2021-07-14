@@ -239,16 +239,16 @@ nn_models_n_params = [
      {'hidden_layer_sizes': [(512, 1024,), (128, 512,), (128, 128,), (512, 512,), (1024, 512), (64, 128, 512,),
                              (128, 512, 512), (128, 128, 512)],
       'activation': ['logistic', 'tanh', 'relu'],
-      #  'solver': ['adam'],
+       'solver': ['adam', 'sgd'],
 
-      # 'alpha': alpha,  # L2 penalty (regularization term)
-      'alpha': [0.0001],
+      'alpha': alpha,  # L2 penalty (regularization term)
+      # 'alpha': [0.0001],
 
       # 'learning_rate': learning_rate, # Only used when solver='sgd',
       #   'learning_rate_init': [0.001],
       # 'tol': tol,
 
-      'warm_start': warm_start,
+      # 'warm_start': warm_start,
         # 'warm_start': [False],
 
       'batch_size': ['auto', 64, 32, 128],
@@ -271,7 +271,7 @@ nn_models_n_params = [
 
 def run_all_classifiers(x, y, small=False, normalize_x=False, n_jobs=cpu_count() - 1, brain=False, test_size=0.2,
                         n_splits=5, upsample=True, scoring=None, verbose=False, grid_search=False, ind=0, RF=False):
-    all_params = (nn_models_n_params_small if not RF else rf_models_n_params)
+    all_params = (nn_models_n_params if not RF else rf_models_n_params)
     # all_grid_params = dict(reduce(list.__add__, list(map(lambda x: list(x[1].items()), all_params)), []))
     # estimators = all_estimators()
     # estimators = [('MLP', MLPClassifier)]
