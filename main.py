@@ -167,18 +167,29 @@ def main(project_name, ind=0, rf=False):
     # y = df.pop('commit insert bug?')
     # X = df
     # training_X, testing_X, training_y, testing_y = train_test_split(X, y, test_size=.1, random_state=12, stratify=y)
+    name_project = "commons-math"
 
-    df = pd.read_csv(r"dataset\camel\train.csv")
+    df = pd.read_csv(os.path.join("dataset", name_project, "train.csv"))
     df = df.iloc[:, 1:]
-    # del df['delta_ClassDeclaration']
+
+    PMD_FEATURES_AFTER_PRE = [col for col in df.columns if 'PMD' in col]
+    for i in ['file_system_sum_WD', 'author_delta_sum_WD', 'system_WD']:
+        if i in df.columns:
+            PMD_FEATURES_AFTER_PRE.append(i)
+    first_inx_pmd = df.columns.get_loc(PMD_FEATURES_AFTER_PRE[0])
+    last_inx_pmd = df.columns.get_loc(PMD_FEATURES_AFTER_PRE[-1])
+    STATIC_FEATURES_AFTER_PRE = list(df.columns[0:first_inx_pmd])
+    JAVADIFF_FEATURES_AFTER_PRE = list(df.columns[last_inx_pmd + 1:-1])
     y_train = df.pop('commit insert bug?')
     X_train = df
 
-    df_test = pd.read_csv("dataset/camel/test.csv")
+    X_train = X_train[PMD_FEATURES_AFTER_PRE + STATIC_FEATURES_AFTER_PRE + JAVADIFF_FEATURES_AFTER_PRE]
+
+    df_test = pd.read_csv(os.path.join("dataset", name_project, "test.csv"))
     df_test = df_test.iloc[:, 1:]
-    # del df_test['delta_ClassDeclaration']
     y_test = df_test.pop('commit insert bug?')
     X_test = df_test
+    X_test = X_test[PMD_FEATURES_AFTER_PRE + STATIC_FEATURES_AFTER_PRE+JAVADIFF_FEATURES_AFTER_PRE]
 
     scaler = StandardScaler()
     scaler.fit(X_train)
