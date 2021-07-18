@@ -58,73 +58,6 @@ def eval(model, classes, X, y):
 
     return scores
 
-def preprocessing_bugzilla(path):
-    df = pd.read_csv(path)
-    if 'bugzilla' in path:
-        del df["transactionid"]
-        del df["commitdate"]
-        df = df.rename(columns={'bug': 'commit insert bug?'})
-    print(df.shape)
-    # Remove col that contain more than 95% zeros
-    df.replace(0, np.nan, inplace=True)
-    df.dropna(axis=1, how='any', thresh=0.05 * df.shape[1], inplace=True)
-    df.replace(np.nan, 0, inplace=True)
-    print(f"Remove col that contain more than 95% zeros")
-    print(df.shape)
-    df = df.drop_duplicates()
-    return df
-
-def preprocessing(path):
-    df = pd.read_csv(path)
-    df.rename(columns={'blame commit': 'commit insert bug?'}, inplace=True)
-    # Remove redundant columns
-    df = df.iloc[:, 4:]
-    del df["bugfix_commit"]
-    del df["file"]
-    del df['added_lines+removed_lines']
-    del df['added_lines-removed_lines']
-    del df['commit_sha']
-    del df['modification_type']
-    del df['is_java']
-    del df['is_test']
-    del df['added_lines']
-    del df['deleted_lines']
-    print(df.shape)
-    # Remove commit that doesn't change lines
-    df = df[df['current_changed_used_lines'] != 0]
-    print(f"Remove commit that doesn't change lines")
-    print(df.shape)
-
-    # Remove parent and current features
-    features_to_drop = ['parent', 'current']
-    df = df.drop(columns=list(filter(lambda c: any(map(lambda f: f in c, features_to_drop)), df.columns)), axis=1)
-    print(f"Remove parent and current features")
-    print(df.shape)
-
-    # Remove test file
-    def filter_fn(row):
-        if "test" in row['file_name'].lower():
-            return False
-        else:
-            return True
-
-    df = df[df.apply(filter_fn, axis=1)]
-    del df["file_name"]
-    print(f"Remove test file")
-    print(df.shape)
-    # Remove col that contain more than 95% zeros
-    df.replace(0, pd.np.nan, inplace=True)
-    df.dropna(axis=1, how='any', thresh=0.05 * df.shape[1], inplace=True)
-    df.replace(pd.np.nan, 0, inplace=True)
-    print(f"Remove col that contain more than 95% zeros")
-    print(df.shape)
-
-    print(f"Number bug")
-    print(df['commit insert bug?'].sum())
-    print(f"percentage bug")
-    print(df['commit insert bug?'].sum() / df.shape[0])
-    return df
-
 
 def dense_model(model, name, testing_X, testing_y):
     import tensorflow
@@ -217,12 +150,12 @@ def main(project_name, ind=0, rf=False):
         plt.savefig(r"./results/loss_" + str(ind) + "_" + str(len(model.loss_curve_)) + ".png")
 
         # # TODO: Save model
-        # filename_pkl = r"./results/save_model_test" + str(ind) + ".pkl"
-        # pickle.dump(model, open(filename_pkl, 'wb'))
-        # loaded_model = pickle.load(open(filename_pkl, 'rb'))
-        # score_pkl = eval(loaded_model, model.classes_, testing_X, testing_y)
-        # with open(r"./results/bic_scores_score_pkl" + str(ind) + ".json", 'w') as f:
-        #     json.dump({**clf.combination, **score_pkl}, f)
+        filename_pkl = r"./results/save_model_test" + str(ind) + ".pkl"
+        pickle.dump(model, open(filename_pkl, 'wb'))
+        loaded_model = pickle.load(open(filename_pkl, 'rb'))
+        score_pkl = eval(loaded_model, model.classes_, testing_X, testing_y)
+        with open(r"./results/bic_scores_score_pkl" + str(ind) + ".json", 'w') as f:
+            json.dump({**clf.combination, **score_pkl}, f)
         #
         # import joblib
         # filename = r"./results/save_model_test" + str(ind) + ".sav"
