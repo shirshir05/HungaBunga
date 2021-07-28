@@ -48,7 +48,7 @@ jobs:
 
       # Runs a single command using the runners shell
       - name: execute
-        run: python main.py commons-math ${{ matrix.ind }} False > out.txt
+        run: python main.py ${{ matrix.ind }} False > out.txt
       - name: Upload data
         if: ${{ always() }}
         uses: actions/upload-artifact@v2
