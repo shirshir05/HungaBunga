@@ -143,6 +143,12 @@ def main(ind=0, rf=False):
     if not rf:
         import matplotlib.pyplot as plt
         plt.plot(model.loss_curve_)
+
+        if not os.path.exists(os.path.join(".", "results", "loss")):
+            os.mkdir(os.path.join(".", "results", "loss"))
+        if not os.path.exists(os.path.join(".", "results", "save_model")):
+            os.mkdir(os.path.join(".", "results", "save_model"))
+
         plt.savefig(r"./results/loss/loss_" + str(ind) + "_" + str(len(model.loss_curve_)) + ".png")
 
         # # TODO: Save model
