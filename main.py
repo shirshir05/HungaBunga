@@ -90,39 +90,35 @@ def dense_model(model, name, testing_X, testing_y):
         json.dump({**score_dense}, f)
 
 
-def main(project_name, ind=0, rf=False):
-    # df = preprocessing(r"dataset\{0}\java_diff_without_modification_file_new.csv".format(project_name)).to_csv(r"dataset\{0}\preprocessing_modification_file_new.csv".format(project_name))
+def main(ind=0, rf=False):
 
-    # # TODO: preprocessing_modification_file
-    # df = pd.read_csv(r"dataset\{0}\preprocessing_modification_file.csv".format(project_name))
-    # df = df.iloc[:, 1:]
-    # # print(df.shape)
-    # y = df.pop('commit insert bug?')
-    # X = df
-    # training_X, testing_X, training_y, testing_y = train_test_split(X, y, test_size=.1, random_state=12, stratify=y)
     name_project = "commons-math"
 
     df = pd.read_csv(os.path.join("dataset", name_project, "train.csv"))
     df = df.iloc[:, 1:]
 
-    PMD_FEATURES_AFTER_PRE = [col for col in df.columns if 'PMD' in col]
-    for i in ['file_system_sum_WD', 'author_delta_sum_WD', 'system_WD']:
-        if i in df.columns:
-            PMD_FEATURES_AFTER_PRE.append(i)
-    first_inx_pmd = df.columns.get_loc(PMD_FEATURES_AFTER_PRE[0])
-    last_inx_pmd = df.columns.get_loc(PMD_FEATURES_AFTER_PRE[-1])
-    STATIC_FEATURES_AFTER_PRE = list(df.columns[0:first_inx_pmd])
-    JAVADIFF_FEATURES_AFTER_PRE = list(df.columns[last_inx_pmd + 1:-1])
+    # PMD_FEATURES_AFTER_PRE = [col for col in df.columns if 'PMD' in col]
+    # for i in ['file_system_sum_WD', 'author_delta_sum_WD', 'system_WD']:
+    #     if i in df.columns:
+    #         PMD_FEATURES_AFTER_PRE.append(i)
+    # first_inx_pmd = df.columns.get_loc(PMD_FEATURES_AFTER_PRE[0])
+    # last_inx_pmd = df.columns.get_loc(PMD_FEATURES_AFTER_PRE[-1])
+    # STATIC_FEATURES_AFTER_PRE = list(df.columns[0:first_inx_pmd])
+    # JAVADIFF_FEATURES_AFTER_PRE = list(df.columns[last_inx_pmd + 1:-1])
+
     y_train = df.pop('commit insert bug?')
     X_train = df
 
-    X_train = X_train[PMD_FEATURES_AFTER_PRE + STATIC_FEATURES_AFTER_PRE + JAVADIFF_FEATURES_AFTER_PRE]
+    with open(os.path.join("dataset", name_project, "bic_importances.json"), 'r') as file:
+        dic_important = json.load(file)[0].keys()
+
+    X_train = X_train[dic_important]
 
     df_test = pd.read_csv(os.path.join("dataset", name_project, "test.csv"))
     df_test = df_test.iloc[:, 1:]
     y_test = df_test.pop('commit insert bug?')
     X_test = df_test
-    X_test = X_test[PMD_FEATURES_AFTER_PRE + STATIC_FEATURES_AFTER_PRE+JAVADIFF_FEATURES_AFTER_PRE]
+    X_test = X_test[dic_important]
 
     scaler = StandardScaler()
     scaler.fit(X_train)
@@ -147,31 +143,22 @@ def main(project_name, ind=0, rf=False):
     if not rf:
         import matplotlib.pyplot as plt
         plt.plot(model.loss_curve_)
-        plt.savefig(r"./results/loss_" + str(ind) + "_" + str(len(model.loss_curve_)) + ".png")
+        plt.savefig(r"./results/loss/loss_" + str(ind) + "_" + str(len(model.loss_curve_)) + ".png")
 
         # # TODO: Save model
-        filename_pkl = r"./results/save_model_test" + str(ind) + ".pkl"
+        filename_pkl = r"./results/save_model/save_model_test" + str(ind) + ".pkl"
         pickle.dump(model, open(filename_pkl, 'wb'))
-        loaded_model = pickle.load(open(filename_pkl, 'rb'))
-        score_pkl = eval(loaded_model, model.classes_, testing_X, testing_y)
-        with open(r"./results/bic_scores_score_pkl" + str(ind) + ".json", 'w') as f:
-            json.dump({**clf.combination, **score_pkl}, f)
-        #
-        # import joblib
-        # filename = r"./results/save_model_test" + str(ind) + ".sav"
-        # joblib.dump(model, filename)
-        # loaded_model = joblib.load(filename)
-        # score_sav = eval(loaded_model, model.classes_, testing_X, testing_y)
-        # with open(r"./results/bic_scores_score_sav" + str(ind) + ".json", 'w') as f:
-        #     json.dump({**clf.combination, **score_sav}, f)
-
-        # dense_model(loaded_model, "load", testing_X, testing_y)
-        # dense_model(model, "real", testing_X, testing_y)
+        # check save model
+        # loaded_model = pickle.load(open(filename_pkl, 'rb'))
+        # score_pkl = eval(loaded_model, model.classes_, testing_X, testing_y)
+        # with open(r"./results/bic_scores_score_pkl" + str(ind) + ".json", 'w') as f:
+        #     json.dump({**clf.combination, **score_pkl}, f)
 
 
 if __name__ == "__main__":
     ind = None
-    ind = sys.argv[2]
+    ind = sys.argv[1]
     import ast
-    rf = ast.literal_eval(sys.argv[3])
-    main(sys.argv[1], ind, rf)
+
+    rf = ast.literal_eval(sys.argv[2])
+    main(ind, rf)

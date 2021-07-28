@@ -190,7 +190,6 @@ best = [
 # endregion
 
 
-
 # best
 
 # nn_models_n_params = [
@@ -219,7 +218,6 @@ best = [
 # ]
 
 
-
 rf_models_n_params = [
 
     (RandomForestClassifier,
@@ -236,36 +234,46 @@ rf_models_n_params = [
 
 nn_models_n_params = [
     (MLPClassifier,
-     {'hidden_layer_sizes': [(512, 1024,), (128, 512,), (128, 128,), (512, 512,), (1024, 512), (64, 128, 512,),
-                             (128, 512, 512), (128, 128, 512)],
-      'activation': ['logistic', 'tanh', 'relu'],
-       'solver': ['adam', 'sgd'],
-
-      'alpha': alpha,  # L2 penalty (regularization term)
-      # 'alpha': [0.0001],
-
-      # 'learning_rate': learning_rate, # Only used when solver='sgd',
-      #   'learning_rate_init': [0.001],
-      # 'tol': tol,
-
-      # 'warm_start': warm_start,
-        # 'warm_start': [False],
-
-      'batch_size': ['auto', 64, 32, 128],
-    # 'batch_size': [128],
-
-      'max_iter': [1000],
-
-      'early_stopping': [True, False],
-      # 'early_stopping': [False],
+     {
+         # 'hidden_layer_sizes': [(64, 128, 512,)],
+         # 'activation': ['tanh'],
+         # 'solver': ['adam'],
+         # 'alpha': [0.0001],
+         # 'batch_size': [128],
+         # 'early_stopping': [False],
 
 
-      # 'shuffle': [False, True],
-      'shuffle': [True],
+         'hidden_layer_sizes': [(512, 1024,), (128, 512,), (128, 128,), (512, 512,), (1024, 512), (64, 128, 512,),
+                              (128, 512, 512,), (128, 128, 512,)],
+         'activation': ['logistic', 'tanh', 'relu'],
 
-      'random_state': [1]
+         'solver': ['adam', 'sgd'],
 
-      })
+         'alpha': alpha,  # L2 penalty (regularization term)
+
+         # 'learning_rate': learning_rate, # Only used when solver='sgd' or 'adam'
+         #   'learning_rate_init': [0.001],
+         # 'tol': tol,
+
+         # 'warm_start': warm_start,
+         # 'warm_start': [False],
+
+         'batch_size': ['auto', 64, 32, 128],
+
+         # 'batch_size': [128],
+
+         'max_iter': [1000],
+
+         'early_stopping': [True, False],
+
+         # 'early_stopping': [False],
+
+         # 'shuffle': [False, True],
+         'shuffle': [True],
+
+         'random_state': [1]
+
+     })
 ]
 
 
@@ -281,28 +289,6 @@ def run_all_classifiers(x, y, small=False, normalize_x=False, n_jobs=cpu_count()
                     it.product(*(all_params[0][1][varName] for varName in varNames))]
     clf = all_params[0][0](**combinations[ind])
 
-    # proba = []
-    # for name, class_ in estimators:
-    #     if hasattr(class_, 'predict_proba'):
-    #         try:
-    #             params = {}
-    #             for k, v in class_().get_params().items():
-    #                 p = [v]
-    #                 if k in all_grid_params:
-    #                     p.extend(all_grid_params[k])
-    #                 params[k] = p
-    #             proba.append((class_, params))
-    #         except Exception as e:
-    #             pass
-    # all_params.extend(proba)
-    # for m, p in all_params:
-    #     m_params = m().get_params()
-    #     for param in p:
-    #         if param not in m_params:
-    #             print(m, param)
-    # if ind:
-    #     # all_params = [best[int(ind)]]
-    #     all_params = [all_params[int(ind)]]
     return combinations[ind], main_loop(clf, StandardScaler().fit_transform(x) if normalize_x else x, y,
                                         isClassification=True, n_jobs=n_jobs, verbose=verbose, brain=brain,
                                         test_size=test_size, n_splits=n_splits, upsample=upsample, scoring=scoring,
