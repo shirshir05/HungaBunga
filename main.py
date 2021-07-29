@@ -5,6 +5,7 @@ from sklearn.metrics import confusion_matrix
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
 
+import name_features
 from hunga_bunga import HungaBungaClassifier, HungaBungaRegressor, HungaBungaZeroKnowledge, HungaBungaRandomClassifier, \
     HungaBungaRandomRegressor
 import pandas as pd
@@ -108,17 +109,17 @@ def main(ind=0, rf=False):
 
     y_train = df.pop('commit insert bug?')
     X_train = df
+    features_check_before_pre_process = name_features.JAVADIFF_FEATURES_DIFF + name_features.JAVADIFF_FEATURES_STATEMENT + \
+                                        name_features.JAVADIFF_FEATURES_AST + name_features.PMD_FEATURES + name_features.STATIC_FEATURES
+    features_check = [col for col in X_train.columns if col in features_check_before_pre_process]
 
-    with open(os.path.join("dataset", name_project, "bic_importances.json"), 'r') as file:
-        dic_important = json.load(file)[0].keys()
-
-    X_train = X_train[dic_important]
+    X_train = X_train[features_check]
 
     df_test = pd.read_csv(os.path.join("dataset", name_project, "test.csv"))
     df_test = df_test.iloc[:, 1:]
     y_test = df_test.pop('commit insert bug?')
     X_test = df_test
-    X_test = X_test[dic_important]
+    X_test = X_test[features_check]
 
     scaler = StandardScaler()
     scaler.fit(X_train)
