@@ -263,7 +263,7 @@ nn_models_n_params = [
 
          # 'batch_size': [128],
 
-         'max_iter': [1000],
+         'max_iter': [5000],
 
          # 'early_stopping': [True, False],
          'early_stopping': [False],
