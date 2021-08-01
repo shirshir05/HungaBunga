@@ -242,8 +242,8 @@ nn_models_n_params = [
          # 'batch_size': [128],
          # 'early_stopping': [False],
 
-         'hidden_layer_sizes': [(512, 1024,), (128, 512,), (128, 128,), (512, 512,), (1024, 512), (64, 128, 512,),
-                                (128, 512, 512,), (128, 128, 512,)],
+         'hidden_layer_sizes': [(128, 512,), (128, 128,), (512, 512,), (1024, 512,), (64, 128, 512,),
+                                (128, 512, 512,), (128, 128, 512,), (512, 1024, 128)],
          'activation': ['tanh', 'relu'],
 
          # 'solver': ['adam', 'sgd'],
@@ -252,7 +252,7 @@ nn_models_n_params = [
          'alpha': alpha,  # L2 penalty (regularization term)
 
          # 'learning_rate': learning_rate, # Only used when solver='sgd' or 'adam'
-         'learning_rate_init': [0.001, 0.0001],
+         'learning_rate_init': [0.001, 0.0001, 0.01, 0.00001],
          'tol': tol,
 
          # 'warm_start': warm_start,
