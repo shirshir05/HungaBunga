@@ -1,3 +1,4 @@
+import glob
 import pickle
 import random
 
@@ -141,20 +142,24 @@ def main(ind=0, rf=False):
     with open(r"./results/bic_scores_" + str(ind) + ".json", 'w') as f:
         json.dump({**clf.combination, **score}, f)
 
-    if not rf:
-        import matplotlib.pyplot as plt
-        plt.plot(model.loss_curve_)
 
-        if not os.path.exists(os.path.join(".", "results", "loss")):
-            os.mkdir(os.path.join(".", "results", "loss"))
-        if not os.path.exists(os.path.join(".", "results", "save_model")):
-            os.mkdir(os.path.join(".", "results", "save_model"))
+    # if not rf:
+    #     import matplotlib.pyplot as plt
+    #     plt.plot(model.loss_curve_)
+    #
+    #     if not os.path.exists(os.path.join(".", "results", "loss")):
+    #         os.mkdir(os.path.join(".", "results", "loss"))
+    #     if not os.path.exists(os.path.join(".", "results", "save_model")):
+    #         os.mkdir(os.path.join(".", "results", "save_model"))
+    #
+    #     plt.savefig(r"./results/loss/loss_" + str(ind) + "_" + str(len(model.loss_curve_)) + ".png")
+    #
+    #     # # TODO: Save model
+    #     filename_pkl = r"./results/save_model/save_model_test" + str(ind) + ".pkl"
+    #     pickle.dump(model, open(filename_pkl, 'wb'))
 
-        plt.savefig(r"./results/loss/loss_" + str(ind) + "_" + str(len(model.loss_curve_)) + ".png")
 
-        # # TODO: Save model
-        filename_pkl = r"./results/save_model/save_model_test" + str(ind) + ".pkl"
-        pickle.dump(model, open(filename_pkl, 'wb'))
+
         # check save model
         # loaded_model = pickle.load(open(filename_pkl, 'rb'))
         # score_pkl = eval(loaded_model, model.classes_, testing_X, testing_y)
@@ -169,3 +174,5 @@ if __name__ == "__main__":
 
     rf = ast.literal_eval(sys.argv[2])
     main(ind, rf)
+    # for ind in range(512, 600):
+    #     main(ind, False)
