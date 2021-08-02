@@ -241,12 +241,12 @@ nn_models_n_params = [
          # 'batch_size': [128],
          # 'early_stopping': [False],
 
-         'hidden_layer_sizes': [(128, 512,), (128, 128,), (512, 512,), (1024, 512,), (64, 128, 512,),
-                                (128, 512, 512,), (128, 128, 512,), (512, 1024, 128,)],
+         'hidden_layer_sizes': [(128, 512,), (64, 128, 512, 1024,), (128, 128,), (512, 512,), (1024, 512,), (64, 128, 512,),
+                                (128, 512, 512,), (128, 128, 512,), (512, 1024, 128,), (512, 512, 1024, 128,)],
          'activation': ['tanh', 'relu'],
 
          # 'solver': ['adam', 'sgd'],
-         'solver': ['lbfgs'],
+         'solver': ['adam'],
 
          'alpha': alpha,  # L2 penalty (regularization term)
 
@@ -257,7 +257,7 @@ nn_models_n_params = [
 
          'learning_rate_init': [0.001, 0.0001], #Only used when solver=’sgd’ or ‘adam’.
 
-         'max_iter': [10000],  # adam and sgd = epoch, other - gradient steps
+         'max_iter': [3000],  # adam and sgd = epoch, other - gradient steps
 
          # 'shuffle': [False, True], # Only used when solver=’sgd’ or ‘adam’.
          'shuffle': [True],
