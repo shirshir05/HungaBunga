@@ -174,5 +174,5 @@ if __name__ == "__main__":
 
     rf = ast.literal_eval(sys.argv[2])
     main(ind, rf)
-    # for ind in range(512, 600):
+    # for ind in range(0, 49):
     #     main(ind, False)
