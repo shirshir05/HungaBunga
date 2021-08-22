@@ -99,15 +99,6 @@ def main(ind=0, rf=False):
     df = pd.read_csv(os.path.join("dataset", name_project, "train.csv"))
     df = df.iloc[:, 1:]
 
-    # PMD_FEATURES_AFTER_PRE = [col for col in df.columns if 'PMD' in col]
-    # for i in ['file_system_sum_WD', 'author_delta_sum_WD', 'system_WD']:
-    #     if i in df.columns:
-    #         PMD_FEATURES_AFTER_PRE.append(i)
-    # first_inx_pmd = df.columns.get_loc(PMD_FEATURES_AFTER_PRE[0])
-    # last_inx_pmd = df.columns.get_loc(PMD_FEATURES_AFTER_PRE[-1])
-    # STATIC_FEATURES_AFTER_PRE = list(df.columns[0:first_inx_pmd])
-    # JAVADIFF_FEATURES_AFTER_PRE = list(df.columns[last_inx_pmd + 1:-1])
-
     y_train = df.pop('commit insert bug?')
     X_train = df
     features_check_before_pre_process = name_features.JAVADIFF_FEATURES_DIFF + name_features.JAVADIFF_FEATURES_STATEMENT + \
@@ -119,6 +110,7 @@ def main(ind=0, rf=False):
     df_test = pd.read_csv(os.path.join("dataset", name_project, "test.csv"))
     df_test = df_test.iloc[:, 1:]
     y_test = df_test.pop('commit insert bug?')
+
     X_test = df_test
     X_test = X_test[features_check]
 
@@ -126,6 +118,9 @@ def main(ind=0, rf=False):
     scaler.fit(X_train)
     X_train = pd.DataFrame(scaler.transform(X_train))
     X_test = pd.DataFrame(scaler.transform(X_test))
+
+    # X_test = X_test.apply(np.log, axis=0)
+    # X_train = X_train.apply(np.log, axis=0)
 
     testing_X = X_test
     testing_y = y_test
