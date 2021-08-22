@@ -242,7 +242,7 @@ nn_models_n_params = [
          'hidden_layer_sizes': [(64, 128, 512,)],
          'learning_rate_init': [0.001],
          'max_iter': [5000, 3000, 1000, 500],
-         'random_state': [12],
+         'random_state': [2, 3, 4, 5, 6, 7, 8, 12, 64, 32],
          'shuffle': [True],
          'solver': ['adam'],
         'tol': [0.0001, 0.001],
