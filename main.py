@@ -93,8 +93,7 @@ def dense_model(model, name, testing_X, testing_y):
 
 
 def main(ind=0, rf=False):
-
-    name_project = "commons-math"
+    name_project = "cayenne"
 
     df = pd.read_csv(os.path.join("dataset", name_project, "train.csv"))
     df = df.iloc[:, 1:]
@@ -113,6 +112,11 @@ def main(ind=0, rf=False):
 
     X_test = df_test
     X_test = X_test[features_check]
+
+    # scaler_min_max = MinMaxScaler((0, 1))
+    # scaler_min_max.fit(X_train)
+    # X_train = pd.DataFrame(scaler_min_max.transform(X_train))
+    # X_test = pd.DataFrame(scaler_min_max.transform(X_test))
 
     scaler = StandardScaler()
     scaler.fit(X_train)
@@ -137,7 +141,6 @@ def main(ind=0, rf=False):
     with open(r"./results/bic_scores_" + str(ind) + ".json", 'w') as f:
         json.dump({**clf.combination, **score}, f)
 
-
     if not rf:
         import matplotlib.pyplot as plt
         plt.plot(model.loss_curve_)
@@ -152,8 +155,6 @@ def main(ind=0, rf=False):
         # # TODO: Save model
         filename_pkl = r"./results/save_model/save_model_test" + str(ind) + ".pkl"
         pickle.dump(model, open(filename_pkl, 'wb'))
-
-
 
         # check save model
         # loaded_model = pickle.load(open(filename_pkl, 'rb'))

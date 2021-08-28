@@ -235,53 +235,53 @@ rf_models_n_params = [
 nn_models_n_params = [
     (MLPClassifier,
      {
-         'activation': ['tanh'],
-         'alpha': [0.0001, 0.001],
-         'batch_size': [128, 64, 32],
-         'early_stopping': [False],
-         'hidden_layer_sizes': [(64, 128, 512,)],
-         'learning_rate_init': [0.001],
-         'max_iter': [5000, 3000, 1000, 500],
-         'random_state': [2, 3, 4, 5, 6, 7, 8, 12, 64, 32],
-         'shuffle': [True],
-         'solver': ['adam'],
-        'tol': [0.0001, 0.001],
+        #  'activation': ['tanh'],
+        #  'alpha': [0.0001, 0.001],
+        #  'batch_size': [ 64,128, 32],
+        #  'early_stopping': [False],
+        #  'hidden_layer_sizes': [(64, 128, 512,)],
+        #  'learning_rate_init': [0.001],
+        #  'max_iter': [1000, 5000, 3000, 1000, 500],
+        #  'random_state': [1],
+        #  'shuffle': [True],
+        #  'solver': ['adam'],
+        # 'tol': [0.0001, 0.001],
 
-         # 'hidden_layer_sizes': [(128, 512,), (64, 128, 512, 1024,), (128, 128,), (512, 512,), (1024, 512,), (64, 128, 512,),
-         #                        (128, 512, 512,), (128, 128, 512,), (512, 1024, 128,), (512, 512, 1024, 128,)],
-         # 'activation': ['tanh', 'relu'],
-         #
-         # # 'solver': ['adam', 'sgd'],
-         # 'solver': ['adam'],
-         #
-         # 'alpha': alpha,  # L2 penalty (regularization term)
-         #
-         # # 'batch_size': ['auto', 64, 32, 128],
-         # 'batch_size': [64],
-         #
-         # # 'learning_rate': learning_rate, # Only used when solver='sgd'
-         #
-         # 'learning_rate_init': [0.001, 0.0001], #Only used when solver=’sgd’ or ‘adam’.
-         #
-         # 'max_iter': [3000],  # adam and sgd = epoch, other - gradient steps
-         #
-         # # 'shuffle': [False, True], # Only used when solver=’sgd’ or ‘adam’.
-         # 'shuffle': [True],
-         #
-         # 'random_state': [1],
-         #
-         # 'tol': tol,
-         #
-         # # 'warm_start': warm_start,
-         # # 'warm_start': [False],
-         #
-         # # 'batch_size': [128],
-         #
-         #
-         # # 'early_stopping': [True, False],
+         'hidden_layer_sizes': [(128, 512,), (64, 128, 512, 1024,), (128, 128,), (512, 512,), (1024, 512,), (64, 128, 512,),
+                                (128, 512, 512,), (128, 128, 512,), (512, 1024, 128,), (512, 512, 1024, 128,)],
+         'activation': ['tanh', 'relu'],
+
+         # 'solver': ['adam', 'sgd'],
+         'solver': ['adam'],
+
+         'alpha': alpha,  # L2 penalty (regularization term)
+
+         # 'batch_size': ['auto', 64, 32, 128],
+         'batch_size': [64],
+
+         # 'learning_rate': learning_rate, # Only used when solver='sgd'
+
+         'learning_rate_init': [0.001, 0.0001], #Only used when solver=’sgd’ or ‘adam’.
+
+         'max_iter': [3000],  # adam and sgd = epoch, other - gradient steps
+
+         # 'shuffle': [False, True], # Only used when solver=’sgd’ or ‘adam’.
+         'shuffle': [True],
+
+         'random_state': [1],
+
+         'tol': tol,
+
+         # 'warm_start': warm_start,
+         # 'warm_start': [False],
+
+         # 'batch_size': [128],
+
+
+         # 'early_stopping': [True, False],
+         'early_stopping': [False],
+
          # 'early_stopping': [False],
-         #
-         # # 'early_stopping': [False],
 
      })
 ]
