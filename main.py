@@ -93,7 +93,7 @@ def dense_model(model, name, testing_X, testing_y):
 
 
 def main(ind=0, rf=False):
-    name_project = "cayenne"
+    name_project = "systemds"
 
     df = pd.read_csv(os.path.join("dataset", name_project, "train.csv"))
     df = df.iloc[:, 1:]
