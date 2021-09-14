@@ -92,8 +92,8 @@ def dense_model(model, name, testing_X, testing_y):
         json.dump({**score_dense}, f)
 
 
-def main(ind=0, rf=False):
-    name_project = "cayenne"
+def main(ind=0, project=None, rf=False):
+    name_project = project
 
     df = pd.read_csv(os.path.join("dataset", name_project, "train.csv"))
     df = df.iloc[:, 1:]
@@ -166,11 +166,9 @@ def main(ind=0, rf=False):
 if __name__ == "__main__":
     ind = None
     ind = sys.argv[1]
+    project = sys.argv[2]
 
-    import ast
-
-    rf = ast.literal_eval(sys.argv[2])
-    main(ind, rf)
+    main(ind, project)
 
     # for ind in range(0, 49):
     #     main(ind, False)
