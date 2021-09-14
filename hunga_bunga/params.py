@@ -13,7 +13,8 @@ tol = [1e-4, 1e-3]
 
 warm_start = [True, False]
 # alpha = [1e-5, 1e-4, 1e-3, 1e-2, 0.1, 1, 3, 10]
-alpha = [1e-6, 1e-5, 1e-4, 1e-3, 1e-2]
+# alpha = [1e-6, 1e-5, 1e-4, 1e-3, 1e-2]
+alpha = [1e-6,  1e-3, 1e-2]
 
 # alpha = [1e-5]
 alpha_small = [1e-5, 1e-3, 0.1, 1]

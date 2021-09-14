@@ -269,8 +269,8 @@ nn_models_n_params = [
 
          'alpha': alpha,  # L2 penalty (regularization term)
 
-         # 'batch_size': ['auto', 64, 32, 128],
-         'batch_size': [64],
+         'batch_size': [ 64, 32, 128],
+         # 'batch_size': [64],
 
          # 'learning_rate': learning_rate, # Only used when solver='sgd'
 
