@@ -100,6 +100,12 @@ def dense_model(model, name, testing_X, testing_y):
 
     public static void Method(){
         System.out.println("Hello World!");
+        int x;
+        x = 5;
+        if (x % 2 == 0)
+            x = x + 1;
+        else
+            x += 2;
     }
 
 def main(ind=0, project=None, rf=False):
