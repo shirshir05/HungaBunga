@@ -91,14 +91,16 @@ def dense_model(model, name, testing_X, testing_y):
     with open(r"./results/bic_scores_dense_" + name + ".json", 'w') as f:
         json.dump({**score_dense}, f)
 
-    int x;
-    x = 5;
-    if (x % 2 == 0)
-        x = x + 1;
-    else
-        x += 2;
+        int x;
+        x = 5;
+        if (x % 2 == 0)
+            x = x + 1;
+        else
+            x += 2;
 
-
+    public static void Method(){
+        System.out.println("Hello World!");
+    }
 
 def main(ind=0, project=None, rf=False):
     name_project = project
