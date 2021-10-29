@@ -101,7 +101,7 @@ def main(ind=0, project=None, rf=False):
     y_train = df.pop('commit insert bug?')
     X_train = df
     features_check_before_pre_process = name_features.JAVADIFF_FEATURES_DIFF + name_features.JAVADIFF_FEATURES_STATEMENT + \
-                                        name_features.JAVADIFF_FEATURES_AST + name_features.PMD_FEATURES + name_features.STATIC_FEATURES
+                                        name_features.JAVADIFF_FEATURES_AST  # + name_features.PMD_FEATURES + name_features.STATIC_FEATURES
     features_check = [col for col in X_train.columns if col in features_check_before_pre_process]
 
     X_train = X_train[features_check]
