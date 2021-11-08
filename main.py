@@ -95,7 +95,7 @@ def dense_model(model, name, testing_X, testing_y):
 def main(ind=0, project=None, rf=False):
     name_project = project
 
-    df = pd.read_csv(os.path.join("dataset", name_project, "train_half.csv"))
+    df = pd.read_csv(os.path.join("dataset", name_project, "train_G_synthetic.csv"))
     df = df.iloc[:, 1:]
 
     y_train = df.pop('commit insert bug?')
@@ -106,7 +106,7 @@ def main(ind=0, project=None, rf=False):
 
     X_train = X_train[features_check]
 
-    df_test = pd.read_csv(os.path.join("dataset", name_project, "test_half.csv"))
+    df_test = pd.read_csv(os.path.join("dataset", name_project, "synthetic_test.csv"))
     df_test = df_test.iloc[:, 1:]
     y_test = df_test.pop('commit insert bug?')
 
