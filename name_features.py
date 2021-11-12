@@ -1,17 +1,20 @@
+import copy
+
 JIT_FEATURES = ['comm', 'adev', 'add', 'del', 'own', 'minor', 'sctr', 'nadev', 'ncomm', 'nsctr', 'oexp', 'exp', 'nd',
                 'entropy', 'la', 'ld', 'lt', 'age', 'nuc', 'cexp', 'sexp', 'rexp', 'fix_bug']
 
-STATIC = ['PDA', 'LOC', 'CLOC', 'PUA', 'McCC', 'LLOC', 'LDC', 'NOS', 'MISM', 'CCL', 'TNOS', 'TLLOC',
-          'NLE', 'CI', 'HPL', 'MI', 'HPV', 'CD', 'NOI', 'NUMPAR', 'MISEI', 'CC', 'LLDC', 'NII', 'CCO', 'CLC', 'TCD',
-          'NL', 'TLOC', 'CLLC', 'TCLOC', 'MIMS', 'HDIF', 'DLOC', 'NLM', 'DIT', 'NPA', 'TNLPM',
-          'TNLA', 'NLA', 'AD', 'TNLPA', 'NM', 'TNG', 'NLPM', 'TNM', 'NOC', 'NOD', 'NOP', 'NLS', 'NG', 'TNLG', 'CBOI',
-          'RFC', 'NLG', 'TNLS', 'TNA', 'NLPA', 'NOA', 'WMC', 'NPM', 'TNPM', 'TNS', 'NA', 'LCOM5', 'NS', 'CBO', 'TNLM',
-          'TNPA']
+STATIC = ['LOC', 'CLOC', 'LLOC', 'LDC', 'NOS', 'TNOS', 'TLLOC',
+          'NLE', 'NOI', 'NUMPAR', 'LLDC', 'NII', 'CLC', 'TCD',
+          'NL', 'TLOC', 'CLLC', 'TCLOC', 'DLOC', 'NLM', 'NPA', 'TNLPM',
+          'TNLA', 'NLA', 'AD', 'TNLPA', 'NM', 'TNG', 'NLPM', 'TNM', 'NLS', 'NG', 'TNLG',
+          'RFC', 'NLG', 'TNLS', 'TNA', 'NLPA', 'NPM', 'TNPM', 'TNS', 'NA', 'NS', 'TNLM',
+          'TNPA']  # 'PDA','PUA', 'McCC', 'MISM', 'CCL', 'CI', 'HPL', 'MI', 'HPV', 'CD', 'MISEI', 'CC','CCO', 'MIMS',
+# 'HDIF', 'DIT', 'NOC', 'NOD', 'NOP', 'CBOI', 'NOA', 'WMC', 'LCOM5', 'CBO',
 
 STATIC_FEATURES = []
 for f in STATIC:
     STATIC_FEATURES.append('parent_' + f)
-    STATIC_FEATURES.append('current_' + f)
+    # STATIC_FEATURES.append('current_' + f)
     STATIC_FEATURES.append('delta_' + f)
 
 # region PMD_RULES
@@ -326,15 +329,15 @@ PMD_RULES = [{'type': 'Basic Rules', 'rule': 'Avoid Branching Statement As Last 
 PMD_FEATURES = []
 for f in PMD_RULES:
     PMD_FEATURES.append('parent_' + f['abbrev'])
-    PMD_FEATURES.append('current_' + f['abbrev'])
+    # PMD_FEATURES.append('current_' + f['abbrev'])
     PMD_FEATURES.append('delta_' + f['abbrev'])
 PMD_FEATURES += ['file_system_sum_WD', 'author_delta_sum_WD', 'system_WD']
-# TODO: change without parent current delta
-# for i in ['file_system_sum_WD', 'author_delta_sum_WD', 'system_WD']:
-#     PMD_FEATURES.append('parent_' + i)
-#     PMD_FEATURES.append('current_' + i)
-#     PMD_FEATURES.append('delta_' + i)
-# PMD_FEATURES +=
+
+
+
+# System/WD The warning density of the project.
+# File/System/WD The cumulative difference between warning density of the file and the project as a whole.
+# Author/Delta/WD The cumulative sum of the changes in warning density by the author
 
 
 JAVADIFF_FEATURES_DIFF = ['parent_changed_lines', 'parent_used_lines', 'parent_changed_used_lines',
@@ -342,6 +345,7 @@ JAVADIFF_FEATURES_DIFF = ['parent_changed_lines', 'parent_used_lines', 'parent_c
                           'parent_methods_changed_used_lines', 'parent_methods_count', 'parent_lines_hunks',
                           'parent_used_lines_hunks', 'used_added_lines+used_removed_lines',
                           'used_added_lines-used_removed_lines']
+
 JAVADIFF_FEATURES_LIZARD = ['parent_CCN', 'parent_ND', 'parent_average_cyclomatic_complexity',
                             'parent_average_nloc', 'parent_average_token_count', 'parent_nloc', 'parent_token_count']
 
@@ -445,8 +449,8 @@ JAVADIFF_FEATURES_AST = ['ast_diff_condBlockOthersAdd', 'ast_diff_condBlockRetAd
                          'ast_diff_varModChange', 'ast_diff_varReplVar', 'ast_diff_varReplMc', 'ast_diff_tyAdd',
                          'ast_diff_tyImpInterf']
 
+JAVADIFF_FEATURES = JAVADIFF_FEATURES_AST + JAVADIFF_FEATURES_HALSTED + JAVADIFF_FEATURES_STATEMENT + JAVADIFF_FEATURES_LIZARD + JAVADIFF_FEATURES_DIFF
 
-JAVADIFF_FEATURES = JAVADIFF_FEATURES_AST+JAVADIFF_FEATURES_HALSTED+JAVADIFF_FEATURES_STATEMENT+JAVADIFF_FEATURES_LIZARD+JAVADIFF_FEATURES_DIFF
 LAB_FEATURES = ['parent_checkstyle_files_NCSSForThisFile_x', 'parent_checkstyle_files_NCSSForThisClass_x',
                 'parent_checkstyle_files_NumberOfProtectedMethod_x', 'parent_checkstyle_files_NumberOfPackageMethod_x',
                 'parent_checkstyle_files_NumberOfPrivateMethod_x', 'parent_checkstyle_files_FileLength_x',

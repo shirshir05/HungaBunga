@@ -95,18 +95,18 @@ def dense_model(model, name, testing_X, testing_y):
 def main(ind=0, project=None, rf=False):
     name_project = project
 
-    df = pd.read_csv(os.path.join("dataset", name_project, "train_G_synthetic.csv"))
+    df = pd.read_csv(os.path.join("dataset", name_project, "train.csv"))
     df = df.iloc[:, 1:]
 
     y_train = df.pop('commit insert bug?')
     X_train = df
     features_check_before_pre_process = name_features.JAVADIFF_FEATURES_DIFF + name_features.JAVADIFF_FEATURES_STATEMENT + \
-                                        name_features.JAVADIFF_FEATURES_AST  # + name_features.PMD_FEATURES + name_features.STATIC_FEATURES
+                                        name_features.JAVADIFF_FEATURES_AST + name_features.STATIC_FEATURES # + name_features.PMD_FEATURES
     features_check = [col for col in X_train.columns if col in features_check_before_pre_process]
 
     X_train = X_train[features_check]
 
-    df_test = pd.read_csv(os.path.join("dataset", name_project, "synthetic_test.csv"))
+    df_test = pd.read_csv(os.path.join("dataset", name_project, "test.csv"))
     df_test = df_test.iloc[:, 1:]
     y_test = df_test.pop('commit insert bug?')
 
@@ -161,6 +161,45 @@ def main(ind=0, project=None, rf=False):
         # score_pkl = eval(loaded_model, model.classes_, testing_X, testing_y)
         # with open(r"./results/bic_scores_score_pkl" + str(ind) + ".json", 'w') as f:
         #     json.dump({**clf.combination, **score_pkl}, f)
+
+
+def train_after_save_model(project):
+    name_project = project
+
+    df = pd.read_csv(os.path.join("dataset", name_project, "train.csv"))
+    df = df.iloc[:, 1:]
+
+    y_train = df.pop('commit insert bug?')
+    X_train = df
+    features_check_before_pre_process = name_features.JAVADIFF_FEATURES_DIFF + name_features.JAVADIFF_FEATURES_STATEMENT + \
+                                        name_features.JAVADIFF_FEATURES_AST + name_features.PMD_FEATURES + name_features.STATIC_FEATURES
+    features_check = [col for col in X_train.columns if col in features_check_before_pre_process]
+
+    X_train = X_train[features_check]
+
+    df_test = pd.read_csv(os.path.join("dataset", name_project, "test.csv"))
+    df_test = df_test.iloc[:, 1:]
+    y_test = df_test.pop('commit insert bug?')
+
+    X_test = df_test
+    X_test = X_test[features_check]
+
+    scaler = StandardScaler()
+    scaler.fit(X_train)
+    X_train = pd.DataFrame(scaler.transform(X_train))
+    X_test = pd.DataFrame(scaler.transform(X_test))
+
+    testing_X = X_test
+    testing_y = y_test
+    training_X = X_train
+    training_y = y_train
+
+    loaded_model = pickle.load(open(filename_pkl, 'rb'))
+
+    score_pkl = eval(loaded_model, loaded_model.classes_, testing_X, testing_y)
+    # print(score_pkl)
+    # with open(r"./results/bic_scores_score_pkl" + str(ind) + ".json", 'w') as f:
+    #     json.dump({**clf.combination, **score_pkl}, f)
 
 
 if __name__ == "__main__":
